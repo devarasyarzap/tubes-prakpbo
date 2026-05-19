@@ -242,24 +242,36 @@
             window.location.href = 'dashboard.html';
         }
 
-        function handleRegisterSubmit(event) {
+        async function handleRegisterSubmit(event) {
             event.preventDefault();
-            const kk = document.getElementById('reg-kk').value;
-            const nama = document.getElementById('reg-nama').value;
-
-            if (kk.length < 12) {
-                alert("Error Validasi: Nomor Kartu Keluarga tidak valid (Terlalu pendek)!");
-                return;
-            }
-
-            alert(`Sukses mendaftarkan KK baru!\nNomor KK: ${kk}\nKepala Keluarga: ${nama}\n\nData siap dikirim sebagai request BODY (POST /api/keluarga). Menuju ke dashboard...`);
-            closeModal();
-            window.location.href = 'dashboard.html';
-        }
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
+            
+            const data = {
+                kk: document.getElementById('reg-kk').value,
+                nama: document.getElementById('reg-nama').value,
+                alamat: document.getElementById('reg-alamat').value,
+                anggota: document.getElementById('reg-anggota').value,
+                email: document.getElementById('reg-email').value,
+                password: document.getElementById('reg-password').value
+            };
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/users/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    alert("Registrasi berhasil!");
+                    closeModal();
+                } else {
+                    alert("Registrasi gagal!");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Backend tidak terhubung!");
             }
         }
     </script>
