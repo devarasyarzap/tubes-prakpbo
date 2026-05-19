@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxbin - Digitalisasi Sampah Terintegrasi</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 font-sans scroll-smooth">
+
+    <nav class="bg-white/80 backdrop-blur-md fixed top-0 w-full z-40 border-b border-gray-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2 text-emerald-600 font-bold text-2xl tracking-wider">
+                <i class="fa-solid fa-trash-can-arrow-up"></i>
+                <span>FLUXBIN</span>
+            </div>
+            <div class="hidden md:flex space-x-8 text-gray-600 font-medium text-sm">
+                <a href="#beranda" class="hover:text-emerald-600 transition">Beranda</a>
+                <a href="#fitur" class="hover:text-emerald-600 transition">Fitur Sistem</a>
+                <a href="#tentang" class="hover:text-emerald-600 transition">Tentang Kami</a>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="openModal('login')" class="text-sm font-semibold text-emerald-600 hover:text-emerald-700 px-4 py-2 rounded-lg transition">
+                    Masuk
+                </button>
+                <button onclick="openModal('register')" class="text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg shadow-sm transition">
+                    Daftar Warga
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header id="beranda" class="pt-32 pb-20 md:py-40 bg-gradient-to-br from-emerald-50 via-white to-emerald-50/30 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6 text-center lg:text-left">
+                <div class="inline-flex items-center space-x-2 bg-emerald-100/60 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold tracking-wide">
+                    <i class="fa-solid fa-leaf"></i>
+                    <span>Solusi Manajemen Sampah Modern Wilayah</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
+                    Digitalisasi Sampah <br class="hidden md:block"> Terintegrasi <span class="text-emerald-600">Fluxbin</span>
+                </h1>
+                <p class="text-gray-600 text-base md:text-lg max-w-xl mx-auto lg:mx-0">
+                    Sistem pengelolaan sampah mandiri tingkat lingkungan untuk pencatatan setoran, pelaporan iuran bulanan, serta kalkulasi dampak lingkungan secara transparan.
+                </p>
+                <div class="pt-4 flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+                    <button onclick="openModal('register')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-8 rounded-xl shadow-lg shadow-emerald-600/20 transition transform hover:-translate-y-0.5 text-center cursor-pointer">
+                        Mulai Daftar KK Baru
+                    </button>
+                    <a href="#fitur" class="border border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-3.5 px-8 rounded-xl bg-white hover:bg-gray-50 transition text-center">
+                        Pelajari Fitur
+                    </a>
+                </div>
+            </div>
+
+            <div class="relative flex justify-center lg:justify-end">
+                <div class="w-72 h-72 md:w-96 md:h-96 bg-emerald-400 rounded-full absolute -z-10 filter blur-3xl opacity-20"></div>
+                
+                <div class="w-full max-w-md bg-slate-900 text-slate-100 p-6 rounded-2xl shadow-2xl border border-slate-800 space-y-6 transform lg:rotate-2 hover:rotate-0 transition duration-500 font-mono text-xs">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <div class="flex space-x-1.5">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        </div>
+                        <span class="text-[10px] text-slate-500 font-sans">fluxbin-v1.0.0.sh</span>
+                    </div>
+                    
+                    <div class="space-y-3 font-sans">
+                        <p class="text-emerald-400 font-mono text-[11px]">&gt; initialize --layered-architecture</p>
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 flex justify-between items-center">
+                            <div>
+                                <p class="text-[10px] text-slate-400">TOTAL SAMPAH TERKUMPUL</p>
+                                <p class="text-lg font-bold text-white mt-0.5">1,248.5 <span class="text-xs text-emerald-400">kg</span></p>
+                            </div>
+                            <i class="fa-solid fa-chart-simple text-emerald-500 text-lg bg-emerald-500/10 p-2.5 rounded-lg"></i>
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 flex justify-between items-center">
+                            <div>
+                                <p class="text-[10px] text-slate-400">PERSENTASE RECYCLING</p>
+                                <p class="text-lg font-bold text-white mt-0.5">84.2%</p>
+                            </div>
+                            <i class="fa-solid fa-recycle text-blue-400 text-lg bg-blue-500/10 p-2.5 rounded-lg"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 text-[10px]">
+                        <span class="bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded border border-emerald-500/20">Controller Layer OK</span>
+                        <span class="bg-blue-500/10 text-blue-400 px-2 py-1 rounded border border-blue-500/20">Service Layer OK</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="fitur" class="py-20 bg-white border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 text-center space-y-12">
+            <div class="space-y-3">
+                <h2 class="text-3xl font-bold text-gray-900 tracking-tight">Fitur Utama Fluxbin</h2>
+                <p class="text-gray-500 max-w-xl mx-auto">Dirancang berdasarkan kebutuhan arsitektur sistem manajemen sampah lingkungan terpadu.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 text-left space-y-4 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 flex items-center justify-center rounded-xl text-xl">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">Pencatatan Volume Akurat</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Pegawai lapangan mencatatkan berat sampah secara berkala berdasarkan tipe kategori (Organik, Anorganik, B3).</p>
+                </div>
+                <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 text-left space-y-4 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 flex items-center justify-center rounded-xl text-xl">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">Manajemen Iuran Warga</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Admin dapat mengelola data iuran bulanan operasional kebersihan secara transparan untuk tiap kepala keluarga.</p>
+                </div>
+                <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 text-left space-y-4 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 flex items-center justify-center rounded-xl text-xl">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">Laporan Dampak Lingkungan</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Statistik visual akumulasi total sampah lingkungan sebagai basis data pengambilan kebijakan kepengurusan RT/RW.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-gray-400 py-8 text-center text-xs border-t border-gray-800">
+        <p>&copy; 2026 Fluxbin Project - Tugas Besar Pemrograman Berorientasi Objek. All rights reserved.</p>
+    </footer>
+
+
+    <div id="auth-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl border border-gray-100 relative mx-4 transform scale-95 transition-transform duration-300" id="modal-content">
+            
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div id="login-form-wrapper" class="space-y-6">
+                <div class="text-center space-y-1.5">
+                    <h3 class="text-2xl font-bold text-gray-900">Selamat Datang Kembali</h3>
+                    <p class="text-xs text-gray-500">Masuk untuk mengakses layanan portal Fluxbin Anda</p>
+                </div>
+                <form onsubmit="handleLoginSubmit(event)" class="space-y-4 text-sm">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Email / Username</label>
+                        <input type="text" id="login-identifier" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Masukkan email anda">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Password</label>
+                        <input type="password" id="login-password" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-lg shadow-md transition cursor-pointer">
+                        Masuk Aplikasi
+                    </button>
+                </form>
+                <p class="text-xs text-center text-gray-500">Belum mendaftarkan KK? <button onclick="switchForm('register')" class="text-emerald-600 font-semibold hover:underline cursor-pointer">Daftar sekarang</button></p>
+            </div>
+
+            <div id="register-form-wrapper" class="space-y-6 hidden">
+                <div class="text-center space-y-1.5">
+                    <h3 class="text-2xl font-bold text-gray-900">Registrasi Warga Baru</h3>
+                    <p class="text-xs text-gray-500">Daftarkan nomor Kartu Keluarga (KK) ke dalam sistem wilayah</p>
+                </div>
+                <form onsubmit="handleRegisterSubmit(event)" class="space-y-4 text-sm max-h-[60vh] overflow-y-auto pr-1">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Nomor Kartu Keluarga (KK)</label>
+                        <input type="number" id="reg-kk" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Contoh: 3273...">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Nama Kepala Keluarga</label>
+                        <input type="text" id="reg-nama" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Nama lengkap sesuai KK">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Alamat Domisili</label>
+                        <input type="text" id="reg-alamat" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Nama jalan, RT/RW, nomor rumah">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Jumlah Anggota</label>
+                            <input type="number" id="reg-anggota" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="0">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Email Kontak</label>
+                            <input type="email" id="reg-email" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="warga@mail.com">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Password Baru</label>
+                        <input type="password" id="reg-password" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-lg shadow-md transition cursor-pointer">
+                        Selesaikan Registrasi
+                    </button>
+                </form>
+                <p class="text-xs text-center text-gray-500">Sudah punya akun terdaftar? <button onclick="switchForm('login')" class="text-emerald-600 font-semibold hover:underline cursor-pointer">Masuk</button></p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('auth-modal');
+        const content = document.getElementById('modal-content');
+        const loginWrapper = document.getElementById('login-form-wrapper');
+        const registerWrapper = document.getElementById('register-form-wrapper');
+
+        function openModal(type) {
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 10);
+            switchForm(type);
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function switchForm(type) {
+            if (type === 'login') {
+                loginWrapper.classList.remove('hidden');
+                registerWrapper.classList.add('hidden');
+            } else {
+                loginWrapper.classList.add('hidden');
+                registerWrapper.classList.remove('hidden');
+            }
+        }
+
+        function handleLoginSubmit(event) {
+            event.preventDefault();
+            const identifier = document.getElementById('login-identifier').value;
+            alert(`Otentikasi berhasil untuk: ${identifier}\n\nMenuju ke halaman Dashboard...`);
+            closeModal();
+            window.location.href = 'dashboard.html';
+        }
+
+        function handleRegisterSubmit(event) {
+            event.preventDefault();
+            const kk = document.getElementById('reg-kk').value;
+            const nama = document.getElementById('reg-nama').value;
+
+            if (kk.length < 12) {
+                alert("Error Validasi: Nomor Kartu Keluarga tidak valid (Terlalu pendek)!");
+                return;
+            }
+
+            alert(`Sukses mendaftarkan KK baru!\nNomor KK: ${kk}\nKepala Keluarga: ${nama}\n\nData siap dikirim sebagai request BODY (POST /api/keluarga). Menuju ke dashboard...`);
+            closeModal();
+            window.location.href = 'dashboard.html';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
