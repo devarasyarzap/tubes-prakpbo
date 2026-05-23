@@ -123,8 +123,8 @@ public class TransaksiService {
     
     // Get laporan keuangan
     public Map<String, Object> getLaporanKeuangan(LocalDateTime start, LocalDateTime end) {
-        Double pendapatan = transaksiRepository.getTotalPendapatan(start, end);
-        if (pendapatan == null) pendapatan = 0.0;
+        Double totalPendapatan = transaksiRepository.getTotalPendapatan(start, end);
+        if (totalPendapatan == null) totalPendapatan = 0.0;
         
         long sudahBayar = transaksiRepository.findByStatus(StatusTransaksi.sudah_bayar).size();
         long belumBayar = transaksiRepository.findByStatus(StatusTransaksi.belum_bayar).size();

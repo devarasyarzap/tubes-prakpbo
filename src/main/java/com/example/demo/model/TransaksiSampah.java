@@ -10,39 +10,33 @@ import java.time.LocalDateTime;
 public class TransaksiSampah {
     
     @Id
-    @Column(name = "no_transaksi", nullable = false, unique = true, length = 30)
     private String noTransaksi;
     
-    @Column(name = "no_kk", nullable = false, length = 20)
+    @Column(name = "no_kk")
     private String noKk;
     
     @Column(name = "tanggal_bayar")
     private LocalDateTime tanggalBayar;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private StatusTransaksi status;
     
     public TransaksiSampah() {
-        String date = LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String random = String.valueOf((int)(Math.random() * 10000));
-        this.noTransaksi = "TRX/" + date + "/" + random;
+        String date = LocalDateTime.now().toString();
+        this.noTransaksi = "TRX/" + System.currentTimeMillis();
         this.status = StatusTransaksi.belum_bayar;
     }
     
-    public void bayar() {
-        this.status = StatusTransaksi.sudah_bayar;
-        this.tanggalBayar = LocalDateTime.now();
-    }
+    // Getter Setter manual
+    public String getNoTransaksi() { return noTransaksi; }
+    public void setNoTransaksi(String noTransaksi) { this.noTransaksi = noTransaksi; }
     
-    public void batalkan() {
-        this.status = StatusTransaksi.diberhentikan;
-    }
-}
-
-// ✅ INI YANG PENTING - tambahkan PUBLIC
-public enum StatusTransaksi {
-    belum_bayar,    // Masih menunggu pembayaran
-    sudah_bayar,    // Sudah dibayar lunas
-    diberhentikan   // Transaksi dibatalkan/dihentikan
+    public String getNoKk() { return noKk; }
+    public void setNoKk(String noKk) { this.noKk = noKk; }
+    
+    public LocalDateTime getTanggalBayar() { return tanggalBayar; }
+    public void setTanggalBayar(LocalDateTime tanggalBayar) { this.tanggalBayar = tanggalBayar; }
+    
+    public StatusTransaksi getStatus() { return status; }
+    public void setStatus(StatusTransaksi status) { this.status = status; }
 }

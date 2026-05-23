@@ -14,22 +14,30 @@ public class SampahMasuk {
     private Integer noSampah;
     
     @ManyToOne
-    @JoinColumn(name = "kategori", referencedColumnName = "idJenis", nullable = false)
+    @JoinColumn(name = "kategori", referencedColumnName = "idJenis")
     private JenisSampah jenisSampah;
     
-    @Column(nullable = false)
     private Integer jumlahMasuk;
     
-    @Column(name = "no_kk", nullable = false, length = 15)
+    @Column(name = "no_kk")
     private String noKk;
     
-    @Column(name = "tanggal_masuk", nullable = false)
+    @Column(name = "tanggal_masuk")
     private LocalDateTime tanggalMasuk;
     
-    @PrePersist
-    protected void onCreate() {
-        if (tanggalMasuk == null) {
-            tanggalMasuk = LocalDateTime.now();
-        }
-    }
+    // Getter dan Setter manual (karena Lombok mungkin bermasalah)
+    public Integer getNoSampah() { return noSampah; }
+    public void setNoSampah(Integer noSampah) { this.noSampah = noSampah; }
+    
+    public JenisSampah getJenisSampah() { return jenisSampah; }
+    public void setJenisSampah(JenisSampah jenisSampah) { this.jenisSampah = jenisSampah; }
+    
+    public Integer getJumlahMasuk() { return jumlahMasuk; }
+    public void setJumlahMasuk(Integer jumlahMasuk) { this.jumlahMasuk = jumlahMasuk; }
+    
+    public String getNoKk() { return noKk; }
+    public void setNoKk(String noKk) { this.noKk = noKk; }
+    
+    public LocalDateTime getTanggalMasuk() { return tanggalMasuk; }
+    public void setTanggalMasuk(LocalDateTime tanggalMasuk) { this.tanggalMasuk = tanggalMasuk; }
 }
