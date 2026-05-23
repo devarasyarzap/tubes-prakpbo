@@ -1,25 +1,24 @@
 package com.example.demo.service;
 
-import com.example.demo.model.StatusTransaksi;
-import com.example.demo.model.TransaksiSampah;
-import com.example.demo.repository.TransaksiRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.demo.model.StatusTransaksi;
+import com.example.demo.model.TransaksiSampah;
+import com.example.demo.repository.TransaksiRepository;
+
 @Service
 public class TransaksiService {
     
     @Autowired
     private TransaksiRepository transaksiRepository;
-    
-    // Harga per kg sampah (bisa disesuaikan)
-    private static final double HARGA_PER_KG = 2000;
     
     // ========== CRUD ==========
     
@@ -123,8 +122,7 @@ public class TransaksiService {
     
     // Get laporan keuangan
     public Map<String, Object> getLaporanKeuangan(LocalDateTime start, LocalDateTime end) {
-        Double totalPendapatan = transaksiRepository.getTotalPendapatan(start, end);
-        if (totalPendapatan == null) totalPendapatan = 0.0;
+        Double totalPendapatan = transaksiRepository.getTotalPendapatan(start, end).doubleValue();
         
         long sudahBayar = transaksiRepository.findByStatus(StatusTransaksi.sudah_bayar).size();
         long belumBayar = transaksiRepository.findByStatus(StatusTransaksi.belum_bayar).size();
@@ -132,7 +130,7 @@ public class TransaksiService {
         
         Map<String, Object> laporan = new HashMap<>();
         laporan.put("periode", Map.of("start", start, "end", end));
-        laporan.put("total_pendapatan", pendapatan);
+        laporan.put("total_pendapatan", totalPendapatan);
         laporan.put("rincian_status", Map.of(
             "sudah_bayar", sudahBayar,
             "belum_bayar", belumBayar,

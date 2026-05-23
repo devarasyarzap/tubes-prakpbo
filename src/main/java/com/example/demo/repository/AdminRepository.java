@@ -1,10 +1,11 @@
 package com.example.demo.repository;
 
-import com.example.demo.model.Admin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.model.Admin;
+
 @Repository
-public interface AdminRepository extends JpaRepository<Admin, String> {
+public interface AdminRepository extends JpaRepository<Admin, Long> {
     // Karena idUser bertipe String, isi JpaRepository dengan <Admin, String>
 }

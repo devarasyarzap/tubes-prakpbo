@@ -1,8 +1,14 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 @Data
 @Entity
@@ -22,7 +28,6 @@ public class TransaksiSampah {
     private StatusTransaksi status;
     
     public TransaksiSampah() {
-        String date = LocalDateTime.now().toString();
         this.noTransaksi = "TRX/" + System.currentTimeMillis();
         this.status = StatusTransaksi.belum_bayar;
     }
