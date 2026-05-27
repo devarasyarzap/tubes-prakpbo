@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxbin - Dashboard Keluarga</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #334155;
+        }
+        .navbar-flux {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 30px;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        /* Kontainer Ikon Tong Sampah Hijau */
+        .logo-svg-container {
+            width: 32px;
+            height: 35px;
+            background-color: #00a86b;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+        }
+        .logo-svg {
+            width: 100%;
+            height: 100%;
+            fill: #ffffff;
+        }
+        .logo-text {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #0f172a;
+            letter-spacing: 0.5px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .logo-highlight {
+            color: #334155;
+        }
+        .user-nav-btn {
+            background-color: #00a86b;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 24px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 168, 107, 0.2);
+            transition: background-color 0.2s;
+        }
+        .user-nav-btn:hover {
+            background-color: #008754;
+        }
+        .user-icon {
+            font-size: 1.1rem;
+        }
+        .flux-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+            height: 100%;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01);
+        }
+        .profile-section-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .profile-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 15px;
+            margin-bottom: 2px;
+        }
+        .profile-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 0;
+        }
+        .badge-lunas {
+            background-color: #00a86b;
+            color: white;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        .welcome-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+        .welcome-highlight {
+            color: #00a86b;
+        }
+        .stat-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0;
+        }
+        .stat-icon-wrapper {
+            font-size: 1.75rem;
+            opacity: 0.8;
+        }
+        .trash-box {
+            background-color: #f8fafc;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 16px;
+            height: 100%;
+        }
+        .trash-title-box {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        .edu-item {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 12px 0;
+        }
+        .edu-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .edu-title {
+            font-weight: 700;
+            color: #334155;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-flux justify-content-between align-items-center">
+        <div class="logo-container">
+            <div class="logo-svg-container">
+                <svg class="logo-svg" viewBox="0 0 24 24">
+                    <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm5-9h2v4h3l-4 4-4-4h3v-4z"/>
+                </svg>
+            </div>
+            <div class="logo-text">Flux<span class="logo-highlight">bin</span></div>
+        </div>
+        <button class="user-nav-btn">
+            <span class="user-icon">👤</span>
+            <span id="nama-warga-nav">Nama Warga</span>
+        </button>
+    </nav>
+
+    <div class="container-fluid px-4 py-4">
+        <div class="row">
+            
+            <div class="col-md-3 mb-4">
+                <div class="flux-card">
+                    <div class="profile-section-title">
+                        <span>🪪</span> Profil Keluarga
+                    </div>
+                    <hr style="border-top: 1px solid #f1f5f9; margin: 15px 0 5px 0;">
+                    
+                    <div class="profile-label">No. Kartu Keluarga</div>
+                    <div class="profile-value" id="kk-val">3273000000000000</div>
+
+                    <div class="profile-label">Kepala Keluarga</div>
+                    <div class="profile-value" id="nama-val">Nama Kepala Keluarga</div>
+
+                    <div class="profile-label">Jumlah Anggota</div>
+                    <div class="profile-value" id="anggota-val">0 Orang</div>
+
+                    <div class="profile-label">Alamat Wilayah</div>
+                    <div class="profile-value" id="alamat-val">Alamat Rumah Tinggal</div>
+
+                    <div class="profile-label">Alamat Email</div>
+                    <div class="profile-value" id="email-val">email@warga.com</div>
+
+                    <div class="profile-label">Iuran Bulanan Lingkungan</div>
+                    <div>
+                        <div class="badge-lunas">✓ LUNAS (Bulan Ini)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                
+                <div class="mb-4">
+                    <h2 class="welcome-title">Selamat Datang, Keluarga <span class="welcome-highlight" id="welcome-name">Warga</span>!</h2>
+                    <p class="text-muted" style="font-size: 0.95rem; max-width: 900px;">Pantau kontribusi pembuangan, pengelolaan, dan pemilahan sampah berkala rumah tangga Anda secara transparan langsung dari sistem kendali Fluxbin.</p>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="stat-card">
+                            <div>
+                                <div class="stat-label">Total Disetor</div>
+                                <h3 class="stat-value">42.5 <span style="font-size: 1rem; font-weight: 600; color: #64748b;">kg</span></h3>
+                            </div>
+                            <div class="stat-icon-wrapper">⚖️</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="stat-card">
+                            <div>
+                                <div class="stat-label">Recycled Rate</div>
+                                <h3 class="stat-value">84.2%</h3>
+                            </div>
+                            <div class="stat-icon-wrapper">🔄</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div>
+                                <div class="stat-label">Flux Points</div>
+                                <h3 class="stat-value" style="color: #eab308;">150</h3>
+                            </div>
+                            <div class="stat-icon-wrapper">🪙</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="flux-card mb-4" style="height: auto;">
+                            <h5 class="font-weight-bold mb-3" style="color: #1e293b; font-size: 1.1rem;">🗑️ Detail Sampah Terkumpul</h5>
+                            <div class="row px-1">
+                                <div class="col-6 p-1">
+                                    <div class="trash-box">
+                                        <div class="trash-title-box">Sampah Organik</div>
+                                        <h4 class="font-weight-bold m-0" style="color: #00a86b; font-size: 1.25rem;">15 kg</h4>
+                                    </div>
+                                </div>
+                                <div class="col-6 p-1">
+                                    <div class="trash-box">
+                                        <div class="trash-title-box">Anorganik (Recycle)</div>
+                                        <h4 class="font-weight-bold m-0" style="color: #3b82f6; font-size: 1.25rem;">20 kg</h4>
+                                    </div>
+                                </div>
+                                <div class="col-6 p-1">
+                                    <div class="trash-box">
+                                        <div class="trash-title-box">Sampah B3</div>
+                                        <h4 class="font-weight-bold m-0" style="color: #ea580c; font-size: 1.25rem;">5 kg</h4>
+                                    </div>
+                                </div>
+                                <div class="col-6 p-1">
+                                    <div class="trash-box">
+                                        <div class="trash-title-box">Lainnya (Other)</div>
+                                        <h4 class="font-weight-bold m-0" style="color: #64748b; font-size: 1.25rem;">2.5 kg</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flux-card" style="height: auto;">
+                            <h5 class="font-weight-bold mb-2" style="color: #1e293b; font-size: 1.1rem;">💡 Edukasi & Tips Fluxbin</h5>
+                            
+                            <div class="edu-item">
+                                <div class="edu-title">⚠️ Penanganan Limbah B3 Rumah Tangga</div>
+                                <small class="text-muted">Jangan mencampur baterai bekas, bohlam lampu, atau kosmetik kedaluwarsa dengan sampah umum karena mengandung zat beracun berbahaya.</small>
+                            </div>
+                            
+                            <div class="edu-item">
+                                <div class="edu-title">♻️ Pemisahan Material Anorganik Berharga</div>
+                                <small class="text-muted">Pastikan botol plastik dan kaleng dalam keadaan kosong serta kering sebelum dikumpulkan guna mempermudah rantai pemrosesan ulang.</small>
+                            </div>
+                            
+                            <div class="edu-item">
+                                <div class="edu-title">🌱 Reduksi Sampah Organik Dapur</div>
+                                <small class="text-muted">Gunakan sisa sayur atau kulit buah sebagai bahan dasar pembuatan eco-enzyme atau pupuk kompos alami pelindung tanaman.</small>
+                            </div>
+
+                            <div class="edu-item">
+                                <div class="edu-title">🪙 Tips Meraih Ekstra Flux Points</div>
+                                <small class="text-muted">Kerapian dan ketepatan pengelompokan jenis sampah saat disetorkan akan langsung diakumulasikan ke sistem penambahan poin bonus.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <div class="flux-card">
+                            <h5 class="font-weight-bold mb-1" style="color: #1e293b; font-size: 1.1rem;">📈 Grafik Kontribusi Sampah Bulanan</h5>
+                            <p class="text-muted small mb-4">Tren Pengumpulan Sampah (6 Bulan Terakhir)</p>
+                            <div style="position: relative; height: 350px; width: 100%;">
+                                <canvas id="fluxMainTrashChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> </div> </div> </div> <footer class="text-center py-3 text-muted bg-white mt-5" style="border-top: 1px solid #e2e8f0; font-size: 0.9rem;">
+        &copy; 2026 Fluxbin. All Rights Reserved.
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // ====================================================================
+            // 1. LOGIKA DATA DINAMIS DARI LOCALSTORAGE
+            // ====================================================================
+            const dataUser = JSON.parse(localStorage.getItem('userLoggedIn'));
+            
+            if (dataUser) {
+                if(dataUser.namaKepalaKeluarga) {
+                    document.getElementById('nama-val').innerText = dataUser.namaKepalaKeluarga;
+                    document.getElementById('nama-warga-nav').innerText = dataUser.namaKepalaKeluarga;
+                    document.getElementById('welcome-name').innerText = dataUser.namaKepalaKeluarga;
+                }
+                if(dataUser.noKK) {
+                    document.getElementById('kk-val').innerText = dataUser.noKK;
+                }
+                if(dataUser.jumlahAnggota) {
+                    document.getElementById('anggota-val').innerText = dataUser.jumlahAnggota + " Orang";
+                }
+                if(dataUser.alamatDomisili) {
+                    document.getElementById('alamat-val').innerText = dataUser.alamatDomisili;
+                }
+                if(dataUser.emailKontak) {
+                    document.getElementById('email-val').innerText = dataUser.emailKontak;
+                }
+            }
+
+            // ====================================================================
+            // 2. LOGIKA GRAFIK BATANG (CHART.JS DENGAN DATA GRUP B3)
+            // ====================================================================
+            const ctx = document.getElementById('fluxMainTrashChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Des 25', 'Jan 26', 'Feb 26', 'Mar 26', 'Apr 26', 'Mei 26'],
+                    datasets: [
+                        {
+                            label: 'Organik (kg)',
+                            data: [15, 14, 16, 18, 20, 15],
+                            backgroundColor: '#00a86b', // Hijau Fluxbin
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Anorganik (kg)',
+                            data: [7, 9, 12, 13, 14, 20],
+                            backgroundColor: '#3b82f6', // Biru
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'B3 (kg)',
+                            data: [2, 3, 3, 4, 3, 5],
+                            backgroundColor: '#ea580c', // Oranye Merah B3
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Berat (kg)'
+                            }
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
