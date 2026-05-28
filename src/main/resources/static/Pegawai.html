@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxbin - Portal Petugas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #334155;
+        }
+        .navbar-flux {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 30px;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-svg-container {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-svg {
+            width: 100%;
+            height: 100%;
+        }
+        .logo-text {
+            font-weight: 800;
+            font-size: 1.6rem;
+            color: #00a86b;
+            letter-spacing: 0.5px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .logo-highlight {
+            color: #1e293b;
+        }
+        .badge-pegawai {
+            background-color: #def7ec;
+            color: #03543f;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .flux-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01);
+        }
+        .form-control {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: #ffffff;
+            color: #334155;
+        }
+        .form-control:focus {
+            border-color: #00a86b;
+            box-shadow: 0 0 0 0.2rem rgba(0, 168, 107, 0.15);
+        }
+        .btn-flux {
+            background-color: #00a86b;
+            color: #ffffff;
+            font-weight: 700;
+            border-radius: 8px;
+            padding: 10px 24px;
+            border: none;
+            transition: background-color 0.2s;
+        }
+        .btn-flux:hover {
+            background-color: #008754;
+            color: #ffffff;
+        }
+        .btn-reset {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 10px 20px;
+            border: none;
+            transition: background-color 0.2s;
+        }
+        .btn-reset:hover {
+            background-color: #e2e8f0;
+            color: #334155;
+        }
+        .form-section-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+        .form-label-custom {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-flux justify-content-between align-items-center">
+        <div class="logo-container">
+            <div class="logo-svg-container">
+                <svg class="logo-svg" viewBox="0 0 81 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M72.2609 23.3913H60.4348V19.3043C60.4348 13.6817 55.8435 9.04348 50.1739 9.04348H30.8261C25.1565 9.04348 20.5652 13.6817 20.5652 19.3043V23.3913H8.73913C4.85217 23.3913 1.65217 26.5913 1.65217 30.4783C1.65217 34.3652 4.85217 37.5652 8.73913 37.5652H12.3948L17.7817 76.1087C18.4557 80.953 22.5696 84.6087 27.4661 84.6087H53.5339C58.4304 84.6087 62.5443 80.953 63.2183 76.1087L68.6052 37.5652H72.2609C76.1478 37.5652 79.3478 34.3652 79.3478 30.4783C79.3478 26.5913 76.1478 23.3913 72.2609 23.3913ZM27.6522 19.3043C27.6522 17.5817 29.0478 16.1304 30.8261 16.1304H50.1739C51.9522 16.1304 53.3478 17.5817 53.3478 19.3043V23.3913H27.6522V19.3043ZM44.087 64.9565V51.8696H53.113L40.5 37.3478L27.887 51.8696H36.913V64.9565H44.087Z" fill="#00A86B"/>
+                </svg>
+            </div>
+            <div class="logo-text">FLUX<span class="logo-highlight">BIN</span></div>
+        </div>
+        <div>
+            <span class="badge-pegawai">👷 Petugas Lapangan</span>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-9">
+                
+                <div class="mb-4">
+                    <h2 class="font-weight-bold" style="color: #1e293b; font-size: 2rem;">✍️ Pencatatan Setoran Sampah Warga</h2>
+                    <p class="text-muted" style="font-size: 0.95rem;">Gunakan form ini untuk memasukkan berat timbangan sampah yang dibawa oleh warga secara riil.</p>
+                </div>
+
+                <div class="flux-card">
+                    <form id="formInputSampah">
+                        
+                        <div class="form-section-title">1. Data Pemilik Sampah</div>
+                        <div class="form-group mb-4">
+                            <label class="form-label-custom text-secondary">NOMOR KARTU KELUARGA (KK) WARGA</label>
+                            <input type="text" class="form-control form-control-lg" id="inputNoKK" placeholder="Contoh: 3273000000000000" style="font-size: 1rem;" required>
+                        </div>
+                        
+                        <hr class="my-4" style="border-top: 1px dashed #e2e8f0;">
+
+                        <div class="form-section-title">2. Berat Timbangan (Kilogram)</div>
+                        <div class="row">
+                            <div class="col-md-6 form-group mb-3">
+                                <label class="form-label-custom text-success">SAMPAH ORGANIK (KG)</label>
+                                <input type="number" step="0.1" class="form-control form-control-lg" id="beratOrganik" value="0" min="0" style="font-size: 1rem;" required>
+                            </div>
+                            <div class="col-md-6 form-group mb-3">
+                                <label class="form-label-custom text-primary">ANORGANIK / RECYCLE (KG)</label>
+                                <input type="number" step="0.1" class="form-control form-control-lg" id="beratAnorganik" value="0" min="0" style="font-size: 1rem;" required>
+                            </div>
+                            <div class="col-md-6 form-group mb-3">
+                                <label class="form-label-custom text-danger">LIMBAH B3 (KG)</label>
+                                <input type="number" step="0.1" class="form-control form-control-lg" id="beratB3" value="0" min="0" style="font-size: 1rem;" required>
+                            </div>
+                            <div class="col-md-6 form-group mb-3">
+                                <label class="form-label-custom text-secondary">LAINNYA / OTHER (KG)</label>
+                                <input type="number" step="0.1" class="form-control form-control-lg" id="beratLainnya" value="0" min="0" style="font-size: 1rem;" required>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" style="border-top: 1px dashed #e2e8f0;">
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="reset" class="btn btn-reset mr-2">Reset Form</button>
+                            <button type="submit" class="btn btn-flux">Simpan Setoran</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-3 text-muted bg-white mt-5" style="border-top: 1px solid #e2e8f0; font-size: 0.9rem;">
+        &copy; 2026 Fluxbin. All Rights Reserved.
+    </footer>
+
+    <script>
+        document.getElementById('formInputSampah').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const dataSetoran = {
+                noKK: document.getElementById('inputNoKK').value,
+                organik: parseFloat(document.getElementById('beratOrganik').value),
+                anorganik: parseFloat(document.getElementById('beratAnorganik').value),
+                b3: parseFloat(document.getElementById('beratB3').value),
+                lainnya: parseFloat(document.getElementById('beratLainnya').value)
+            };
+
+            // Silakan sesuaikan URL endpoint controller Spring Boot Anda
+            const apiUrl = 'http://localhost:8080/api/sampah/simpan'; 
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataSetoran)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Data transaksi setoran sampah warga berhasil direkam ke sistem!');
+                    document.getElementById('formInputSampah').reset();
+                } else {
+                    alert('Gagal merekam data! Mohon periksa kembali keselarasan nomor KK.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Koneksi ke backend terputus! Pastikan server aplikasi Java Spring Boot Anda telah dijalankan.');
+            });
+        });
+    </script>
+</body>
+</html>
