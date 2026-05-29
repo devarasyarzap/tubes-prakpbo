@@ -234,28 +234,74 @@
             }
         }
 
-        function handleLoginSubmit(event) {
+        async function handleLoginSubmit(event) {
             event.preventDefault();
-            const identifier = document.getElementById('login-identifier').value;
-            alert(`Otentikasi berhasil untuk: ${identifier}\n\nMenuju ke halaman Dashboard...`);
-            closeModal();
-            window.location.href = 'dashboard.html';
+            
+            const email = document.getElementById('login-identifier').value;
+            const password = document.getElementById('login-password').value;
+            
+            // Tampilkan loading
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Memproses...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const result = await response.json();
+                console.log('Login response:', result);
+                
+                if (result.success) {
+                    // Simpan data user ke localStorage
+                    localStorage.setItem('userLoggedIn', JSON.stringify(result.data));
+                    
+                    alert(`Selamat datang, ${result.data.namaKepalaKeluarga || result.data.namaUser}!`);
+                    closeModal();
+                    
+                    // Redirect berdasarkan role
+                    if (result.data.role === 'Keluarga' || result.data.role === 'keluarga') {
+                        window.location.href = 'keluarga.html';
+                    } else if (result.data.role === 'Admin' || result.data.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else if (result.data.role === 'Pegawai' || result.data.role === 'pegawai') {
+                        window.location.href = 'pegawai.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                } else {
+                    alert('Login gagal: ' + (result.message || 'Email atau password salah!'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Gagal terhubung ke server! Pastikan backend berjalan di http://localhost:8080');
+            } finally {
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+            }
         }
 
         async function handleRegisterSubmit(event) {
             event.preventDefault();
             
             const data = {
-                kk: document.getElementById('reg-kk').value,
-                nama: document.getElementById('reg-nama').value,
-                alamat: document.getElementById('reg-alamat').value,
-                anggota: document.getElementById('reg-anggota').value,
-                email: document.getElementById('reg-email').value,
+                noKK: document.getElementById('reg-kk').value,
+                namaKepalaKeluarga: document.getElementById('reg-nama').value,
+                jumlahAnggota: document.getElementById('reg-anggota').value,
+                alamatDomisili: document.getElementById('reg-alamat').value,
+                emailKontak: document.getElementById('reg-email').value,
+                noTelp: document.getElementById('reg-telp').value,
                 password: document.getElementById('reg-password').value
             };
             
             try {
-                const response = await fetch('http://localhost:8080/api/users/register', {
+                const response = await fetch('http://localhost:8080/api/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -263,15 +309,21 @@
                     body: JSON.stringify(data)
                 });
                 
-                if (response.ok) {
-                    alert("Registrasi berhasil!");
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert("Registrasi berhasil! Silakan login.");
                     closeModal();
+                    switchForm('login');
+                    
+                    // Isi form login dengan email yang baru register
+                    document.getElementById('login-identifier').value = data.emailKontak;
                 } else {
-                    alert("Registrasi gagal!");
+                    alert("Registrasi gagal: " + result.message);
                 }
             } catch (error) {
-                console.error(error);
-                alert("Backend tidak terhubung!");
+                console.error('Error:', error);
+                alert("Gagal terhubung ke server!");
             }
         }
     </script>

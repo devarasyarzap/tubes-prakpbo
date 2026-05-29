@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxbin - Laporan Sistem</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; }
+        .navbar-flux { background: white; border-bottom: 1px solid #e2e8f0; padding: 12px 30px; }
+        .logo-text { font-weight: 800; font-size: 1.6rem; color: #00a86b; }
+        .flux-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; padding: 24px; margin-bottom: 20px; }
+        .btn-print { background: #00a86b; color: white; border: none; padding: 10px 24px; border-radius: 8px; }
+        @media print { .no-print { display: none; } body { background: white; } .flux-card { box-shadow: none; border: 1px solid #ddd; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-flux no-print">
+        <div class="logo-text">FLUX<span style="color:#1e293b">BIN</span></div>
+        <div><button class="btn-print" onclick="window.print()">🖨️ Cetak Laporan</button></div>
+    </nav>
+    <div class="container py-4">
+        <div class="text-center mb-4"><h2>Laporan Sistem Fluxbin</h2><p>Periode: Mei 2026</p></div>
+        <div class="row"><div class="col-md-6"><div class="flux-card"><h5>📊 Total Sampah per Jenis</h5><canvas id="laporan-chart-jenis" height="200"></canvas></div></div>
+        <div class="col-md-6"><div class="flux-card"><h5>💰 Pendapatan Iuran</h5><p class="display-4 text-success">Rp 2.500.000</p><p>Total KK Aktif: 45 | Tunggakan: 3 KK</p></div></div></div>
+        <div class="flux-card"><h5>📋 Rincian Setoran Sampah Bulan Ini</h5><table class="table"><thead><tr><th>No KK</th><th>Nama Keluarga</th><th>Total Sampah (kg)</th></tr></thead><tbody><tr><td>3273000001</td><td>Keluarga Budi</td><td>28.5 kg</td></tr><tr><td>3273000002</td><td>Keluarga Ani</td><td>35.2 kg</td></tr><tr><td>3273000003</td><td>Keluarga Caca</td><td>18.7 kg</td></tr></tbody></table></div>
+    </div>
+    <script>new Chart(document.getElementById('laporan-chart-jenis'), { type: 'doughnut', data: { labels: ['Organik', 'Anorganik', 'B3'], datasets: [{ data: [245, 380, 95], backgroundColor: ['#00a86b', '#3b82f6', '#ef4444'] }] } });</script>
+</body>
+</html>

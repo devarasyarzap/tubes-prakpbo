@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxbin - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #334155;
+        }
+        .navbar-flux {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 30px;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-svg-container {
+            width: 32px;
+            height: 32px;
+        }
+        .logo-text {
+            font-weight: 800;
+            font-size: 1.6rem;
+            color: #00a86b;
+            letter-spacing: 0.5px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .logo-highlight {
+            color: #1e293b;
+        }
+        .badge-admin {
+            background-color: #e0e7ff;
+            color: #1e40af;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sidebar {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            height: calc(100vh - 100px);
+            position: sticky;
+            top: 20px;
+        }
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-nav li {
+            margin-bottom: 8px;
+        }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #64748b;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .sidebar-nav a:hover {
+            background-color: #f1f5f9;
+            color: #00a86b;
+        }
+        .sidebar-nav a.active {
+            background-color: #00a86b10;
+            color: #00a86b;
+            font-weight: 600;
+        }
+        .flux-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0;
+        }
+        .table-flux thead th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            padding: 14px;
+        }
+        .table-flux tbody td {
+            padding: 14px;
+            vertical-align: middle;
+            font-size: 0.85rem;
+        }
+        .btn-flux {
+            background-color: #00a86b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        .btn-flux:hover {
+            background-color: #008754;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-flux justify-content-between align-items-center">
+        <div class="logo-container">
+            <div class="logo-svg-container">
+                <svg viewBox="0 0 81 92" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
+                    <path d="M72.2609 23.3913H60.4348V19.3043C60.4348 13.6817 55.8435 9.04348 50.1739 9.04348H30.8261C25.1565 9.04348 20.5652 13.6817 20.5652 19.3043V23.3913H8.73913C4.85217 23.3913 1.65217 26.5913 1.65217 30.4783C1.65217 34.3652 4.85217 37.5652 8.73913 37.5652H12.3948L17.7817 76.1087C18.4557 80.953 22.5696 84.6087 27.4661 84.6087H53.5339C58.4304 84.6087 62.5443 80.953 63.2183 76.1087L68.6052 37.5652H72.2609C76.1478 37.5652 79.3478 34.3652 79.3478 30.4783C79.3478 26.5913 76.1478 23.3913 72.2609 23.3913ZM27.6522 19.3043C27.6522 17.5817 29.0478 16.1304 30.8261 16.1304H50.1739C51.9522 16.1304 53.3478 17.5817 53.3478 19.3043V23.3913H27.6522V19.3043ZM44.087 64.9565V51.8696H53.113L40.5 37.3478L27.887 51.8696H36.913V64.9565H44.087Z" fill="#00A86B"/>
+                </svg>
+            </div>
+            <div class="logo-text">FLUX<span class="logo-highlight">BIN</span></div>
+        </div>
+        <div>
+            <span class="badge-admin">👑 Admin Sistem</span>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4 py-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 mb-4">
+                <div class="sidebar">
+                    <ul class="sidebar-nav">
+                        <li><a href="#" class="active" onclick="showSection('dashboard')"><span>📊</span> Dashboard</a></li>
+                        <li><a href="#" onclick="showSection('keluarga')"><span>👨‍👩‍👧‍👦</span> Data Keluarga</a></li>
+                        <li><a href="#" onclick="showSection('sampah')"><span>🗑️</span> Data Sampah</a></li>
+                        <li><a href="#" onclick="showSection('transaksi')"><span>💰</span> Transaksi</a></li>
+                        <li><a href="#" onclick="showSection('laporan')"><span>📄</span> Laporan</a></li>
+                        <li><a href="index.html"><span>🚪</span> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div id="dashboard-section">
+                    <div class="mb-4">
+                        <h2 class="font-weight-bold" style="color: #1e293b;">Dashboard Admin</h2>
+                        <p class="text-muted">Ringkasan data keseluruhan sistem Fluxbin</p>
+                    </div>
+
+                    <!-- Stat Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card">
+                                <div>
+                                    <div class="stat-label text-muted small">Total Keluarga</div>
+                                    <h3 class="stat-value" id="total-keluarga">0</h3>
+                                </div>
+                                <div class="stat-icon-wrapper">👨‍👩‍👧‍👦</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card">
+                                <div>
+                                    <div class="stat-label text-muted small">Total Sampah (kg)</div>
+                                    <h3 class="stat-value" id="total-sampah">0</h3>
+                                </div>
+                                <div class="stat-icon-wrapper">🗑️</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card">
+                                <div>
+                                    <div class="stat-label text-muted small">Pendapatan Iuran</div>
+                                    <h3 class="stat-value" id="total-pendapatan">Rp0</h3>
+                                </div>
+                                <div class="stat-icon-wrapper">💰</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card">
+                                <div>
+                                    <div class="stat-label text-muted small">Tunggakan</div>
+                                    <h3 class="stat-value text-warning" id="total-tunggakan">0</h3>
+                                </div>
+                                <div class="stat-icon-wrapper">⚠️</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="flux-card">
+                                <h5 class="font-weight-bold mb-3">📊 Sampah per Jenis</h5>
+                                <canvas id="chartSampahPerJenis" height="200"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="flux-card">
+                                <h5 class="font-weight-bold mb-3">📈 Tren Sampah (6 Bulan)</h5>
+                                <canvas id="chartTrenSampah" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Transactions -->
+                    <div class="flux-card">
+                        <h5 class="font-weight-bold mb-3">🔄 Transaksi Terbaru</h5>
+                        <div class="table-responsive">
+                            <table class="table table-flux m-0">
+                                <thead>
+                                    <tr><th>No Transaksi</th><th>No KK</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr>
+                                </thead>
+                                <tbody id="recent-transaksi">
+                                    <td><td colspan="5" class="text-center">Memuat data...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="keluarga-section" style="display: none;">
+                    <div class="flux-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="font-weight-bold">📋 Data Keluarga Terdaftar</h5>
+                            <button class="btn-flux" onclick="showTambahKeluarga()">+ Tambah Keluarga</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-flux">
+                                <thead><tr><th>No KK</th><th>Kepala Keluarga</th><th>Alamat</th><th>No Telp</th><th>Aksi</th></tr></thead>
+                                <tbody id="data-keluarga"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sampah-section" style="display: none;">
+                    <div class="flux-card">
+                        <h5 class="font-weight-bold mb-3">🗑️ Data Setoran Sampah</h5>
+                        <div class="table-responsive">
+                            <table class="table table-flux">
+                                <thead><tr><th>ID</th><th>No KK</th><th>Jenis</th><th>Jumlah (kg)</th><th>Tanggal</th></tr></thead>
+                                <tbody id="data-sampah"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="transaksi-section" style="display: none;">
+                    <div class="flux-card">
+                        <h5 class="font-weight-bold mb-3">💰 Data Transaksi Iuran</h5>
+                        <div class="table-responsive">
+                            <table class="table table-flux">
+                                <thead><tr><th>No Transaksi</th><th>No KK</th><th>Status</th><th>Tanggal Bayar</th></tr></thead>
+                                <tbody id="data-transaksi-admin"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="laporan-section" style="display: none;">
+                    <div class="flux-card">
+                        <h5 class="font-weight-bold mb-3">📄 Laporan Sistem</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-4"><input type="date" id="startDate" class="form-control"></div>
+                            <div class="col-md-4"><input type="date" id="endDate" class="form-control"></div>
+                            <div class="col-md-4"><button class="btn-flux" onclick="filterLaporan()">Filter</button></div>
+                        </div>
+                        <div id="laporan-content">
+                            <p class="text-muted">Pilih rentang tanggal untuk melihat laporan.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Keluarga -->
+    <div class="modal fade" id="modalKeluarga" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"><h5>Tambah Keluarga Baru</h5><button class="close" data-dismiss="modal">&times;</button></div>
+                <div class="modal-body">
+                    <input type="text" id="modalNoKK" class="form-control mb-2" placeholder="No Kartu Keluarga">
+                    <input type="text" id="modalNama" class="form-control mb-2" placeholder="Nama Kepala Keluarga">
+                    <input type="text" id="modalAlamat" class="form-control mb-2" placeholder="Alamat">
+                    <input type="text" id="modalNoTelp" class="form-control mb-2" placeholder="No Telepon">
+                    <input type="email" id="modalEmail" class="form-control mb-2" placeholder="Email">
+                    <input type="password" id="modalPassword" class="form-control mb-2" placeholder="Password">
+                </div>
+                <div class="modal-footer"><button class="btn btn-secondary" data-dismiss="modal">Batal</button><button class="btn-flux" onclick="simpanKeluarga()">Simpan</button></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const API = 'http://localhost:8080/api';
+        let sampahChart, trenChart;
+
+        function showSection(section) {
+            document.querySelectorAll('[id$="-section"]').forEach(el => el.style.display = 'none');
+            document.getElementById(`${section}-section`).style.display = 'block';
+            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+            event.target.closest('a').classList.add('active');
+            
+            if (section === 'dashboard') loadDashboard();
+            else if (section === 'keluarga') loadKeluarga();
+            else if (section === 'sampah') loadSampah();
+            else if (section === 'transaksi') loadTransaksiAdmin();
+        }
+
+        async function loadDashboard() {
+            try {
+                const keluarga = await fetch(`${API}/keluarga`).then(res => res.json());
+                const sampah = await fetch(`${API}/sampah-masuk`).then(res => res.json());
+                const transaksi = await fetch(`${API}/transaksi`).then(res => res.json());
+
+                document.getElementById('total-keluarga').innerText = keluarga.length || 0;
+                const totalSampah = sampah.reduce((sum, s) => sum + (s.jumlahMasuk || 0), 0);
+                document.getElementById('total-sampah').innerText = totalSampah + ' kg';
+                const tunggakan = transaksi.filter(t => t.status === 'belum_bayar').length;
+                document.getElementById('total-tunggakan').innerText = tunggakan;
+                document.getElementById('total-pendapatan').innerText = 'Rp ' + ((transaksi.filter(t => t.status === 'sudah_bayar').length * 50000).toLocaleString());
+
+                // Chart per jenis
+                const organik = sampah.filter(s => s.jenisSampah?.namaJenis?.includes('Organik')).reduce((s, a) => s + (a.jumlahMasuk || 0), 0);
+                const anorganik = sampah.filter(s => s.jenisSampah?.namaJenis?.includes('Anorganik')).reduce((s, a) => s + (a.jumlahMasuk || 0), 0);
+                const b3 = sampah.filter(s => s.jenisSampah?.namaJenis?.includes('B3')).reduce((s, a) => s + (a.jumlahMasuk || 0), 0);
+
+                if (sampahChart) sampahChart.destroy();
+                sampahChart = new Chart(document.getElementById('chartSampahPerJenis'), {
+                    type: 'doughnut', data: { labels: ['Organik', 'Anorganik', 'B3'], datasets: [{ data: [organik, anorganik, b3], backgroundColor: ['#00a86b', '#3b82f6', '#ef4444'] }] }
+                });
+
+                // Recent transaksi
+                const tbody = document.getElementById('recent-transaksi');
+                tbody.innerHTML = transaksi.slice(0, 5).map(t => `<tr><td>${t.noTransaksi}</td><td>${t.noKk}</td><td>${t.status === 'sudah_bayar' ? '<span class="text-success">Lunas</span>' : '<span class="text-warning">Belum Bayar</span>'}</td><td>${t.tanggalBayar ? new Date(t.tanggalBayar).toLocaleDateString() : '-'}</td><td><button class="btn-flux btn-sm" onclick="updateStatus('${t.noTransaksi}')">Update</button></td></tr>`).join('');
+            } catch(e) { console.error(e); }
+        }
+
+        async function loadKeluarga() {
+            const res = await fetch(`${API}/keluarga`).then(res => res.json());
+            document.getElementById('data-keluarga').innerHTML = res.map(k => `<tr><td>${k.noKk || k.idUser}</td><td>${k.namaUser || k.namaKepala}</td><td>${k.alamat}</td><td>${k.noTelp}</td><td><button class="btn-flux btn-sm" onclick="hapusKeluarga('${k.noKk || k.idUser}')">Hapus</button></td></tr>`).join('');
+        }
+
+        async function loadSampah() {
+            const res = await fetch(`${API}/sampah-masuk`).then(res => res.json());
+            document.getElementById('data-sampah').innerHTML = res.map(s => `<tr><td>${s.noSampah}</td><td>${s.noKk}</td><td>${s.jenisSampah?.namaJenis || '-'}</td><td>${s.jumlahMasuk}</td><td>${new Date(s.tanggalMasuk).toLocaleDateString()}</td></tr>`).join('');
+        }
+
+        async function loadTransaksiAdmin() {
+            const res = await fetch(`${API}/transaksi`).then(res => res.json());
+            document.getElementById('data-transaksi-admin').innerHTML = res.map(t => `<tr><td>${t.noTransaksi}</td><td>${t.noKk}</td><td>${t.status === 'sudah_bayar' ? '<span class="text-success">✅ Lunas</span>' : '<span class="text-warning">⏳ Belum Bayar</span>'}</td><td>${t.tanggalBayar ? new Date(t.tanggalBayar).toLocaleDateString() : '-'}</td></tr>`).join('');
+        }
+
+        function showTambahKeluarga() { $('#modalKeluarga').modal('show'); }
+        async function simpanKeluarga() { alert('Fungsi simpan terhubung ke backend'); $('#modalKeluarga').modal('hide'); loadKeluarga(); }
+        async function hapusKeluarga(id) { if(confirm('Hapus keluarga?')) { alert('Hapus: '+id); loadKeluarga(); } }
+        async function updateStatus(id) { alert('Update status: '+id); loadDashboard(); }
+        function filterLaporan() { alert('Filter laporan dari ' + document.getElementById('startDate').value + ' s/d ' + document.getElementById('endDate').value); }
+
+        loadDashboard();
+    </script>
+</body>
+</html>

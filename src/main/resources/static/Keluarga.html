@@ -21,7 +21,6 @@
             align-items: center;
             gap: 10px;
         }
-        /* Kontainer Ikon Tong Sampah Hijau */
         .logo-svg-container {
             width: 32px;
             height: 35px;
@@ -61,9 +60,17 @@
             font-size: 0.95rem;
             box-shadow: 0 4px 6px -1px rgba(0, 168, 107, 0.2);
             transition: background-color 0.2s;
+            cursor: pointer;
         }
         .user-nav-btn:hover {
             background-color: #008754;
+        }
+        .logout-btn {
+            background-color: #ef4444;
+            margin-left: 10px;
+        }
+        .logout-btn:hover {
+            background-color: #dc2626;
         }
         .user-icon {
             font-size: 1.1rem;
@@ -101,6 +108,16 @@
         }
         .badge-lunas {
             background-color: #00a86b;
+            color: white;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        .badge-tunggakan {
+            background-color: #ef4444;
             color: white;
             font-weight: 700;
             padding: 6px 14px;
@@ -172,6 +189,40 @@
             font-size: 0.95rem;
             margin-bottom: 2px;
         }
+        .edit-profile-btn {
+            background-color: #f1f5f9;
+            color: #334155;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 15px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .edit-profile-btn:hover {
+            background-color: #e2e8f0;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #94a3b8;
+        }
+        .error-message {
+            background-color: #fee2e2;
+            color: #dc2626;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -185,15 +236,26 @@
             </div>
             <div class="logo-text">Flux<span class="logo-highlight">bin</span></div>
         </div>
-        <button class="user-nav-btn">
-            <span class="user-icon">👤</span>
-            <span id="nama-warga-nav">Nama Warga</span>
-        </button>
+        <div class="nav-buttons">
+            <button class="user-nav-btn" onclick="window.location.href='History.html'">
+                <span class="user-icon">📋</span>
+                <span>Riwayat</span>
+            </button>
+            <button class="user-nav-btn" id="profile-btn">
+                <span class="user-icon">👤</span>
+                <span id="nama-warga-nav">Memuat...</span>
+            </button>
+            <button class="user-nav-btn logout-btn" id="logout-btn">
+                <span class="user-icon">🚪</span>
+                <span>Keluar</span>
+            </button>
+        </div>
     </nav>
 
     <div class="container-fluid px-4 py-4">
         <div class="row">
             
+            <!-- Sidebar Profil -->
             <div class="col-md-3 mb-4">
                 <div class="flux-card">
                     <div class="profile-section-title">
@@ -202,171 +264,359 @@
                     <hr style="border-top: 1px solid #f1f5f9; margin: 15px 0 5px 0;">
                     
                     <div class="profile-label">No. Kartu Keluarga</div>
-                    <div class="profile-value" id="kk-val">3273000000000000</div>
+                    <div class="profile-value" id="kk-val">-</div>
 
                     <div class="profile-label">Kepala Keluarga</div>
-                    <div class="profile-value" id="nama-val">Nama Kepala Keluarga</div>
+                    <div class="profile-value" id="nama-val">-</div>
 
                     <div class="profile-label">Jumlah Anggota</div>
-                    <div class="profile-value" id="anggota-val">0 Orang</div>
+                    <div class="profile-value" id="anggota-val">-</div>
 
                     <div class="profile-label">Alamat Wilayah</div>
-                    <div class="profile-value" id="alamat-val">Alamat Rumah Tinggal</div>
+                    <div class="profile-value" id="alamat-val">-</div>
 
                     <div class="profile-label">Alamat Email</div>
-                    <div class="profile-value" id="email-val">email@warga.com</div>
+                    <div class="profile-value" id="email-val">-</div>
 
-                    <div class="profile-label">Iuran Bulanan Lingkungan</div>
-                    <div>
-                        <div class="badge-lunas">✓ LUNAS (Bulan Ini)</div>
-                    </div>
+                    <div class="profile-label">No. Telepon</div>
+                    <div class="profile-value" id="telp-val">-</div>
+
+                    <div class="profile-label">Status Iuran</div>
+                    <div id="status-iuran"></div>
+
+                    <button class="edit-profile-btn" onclick="window.location.href='ProfilKeluarga.html'">
+                        ✏️ Edit Profil
+                    </button>
                 </div>
             </div>
 
+            <!-- Main Content -->
             <div class="col-md-9">
                 
                 <div class="mb-4">
-                    <h2 class="welcome-title">Selamat Datang, Keluarga <span class="welcome-highlight" id="welcome-name">Warga</span>!</h2>
+                    <h2 class="welcome-title">Selamat Datang, Keluarga <span class="welcome-highlight" id="welcome-name">-</span>!</h2>
                     <p class="text-muted" style="font-size: 0.95rem; max-width: 900px;">Pantau kontribusi pembuangan, pengelolaan, dan pemilahan sampah berkala rumah tangga Anda secara transparan langsung dari sistem kendali Fluxbin.</p>
                 </div>
 
-                <div class="row mb-4">
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <div class="stat-card">
-                            <div>
-                                <div class="stat-label">Total Disetor</div>
-                                <h3 class="stat-value">42.5 <span style="font-size: 1rem; font-weight: 600; color: #64748b;">kg</span></h3>
+                <div id="error-container" class="error-message" style="display: none;"></div>
+                <div id="loading-container" class="loading">⏳ Memuat data dashboard...</div>
+                <div id="dashboard-content" style="display: none;">
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="stat-card">
+                                <div>
+                                    <div class="stat-label">Total Disetor</div>
+                                    <h3 class="stat-value" id="total-disetor">0 <span style="font-size: 1rem; font-weight: 600; color: #64748b;">kg</span></h3>
+                                </div>
+                                <div class="stat-icon-wrapper">⚖️</div>
                             </div>
-                            <div class="stat-icon-wrapper">⚖️</div>
+                        </div>
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="stat-card">
+                                <div>
+                                    <div class="stat-label">Total Setoran</div>
+                                    <h3 class="stat-value" id="total-setoran">0 <span style="font-size: 1rem; font-weight: 600; color: #64748b;">kali</span></h3>
+                                </div>
+                                <div class="stat-icon-wrapper">🗑️</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div>
+                                    <div class="stat-label">Flux Points</div>
+                                    <h3 class="stat-value" id="flux-points" style="color: #eab308;">0</h3>
+                                </div>
+                                <div class="stat-icon-wrapper">🪙</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <div class="stat-card">
-                            <div>
-                                <div class="stat-label">Recycled Rate</div>
-                                <h3 class="stat-value">84.2%</h3>
+
+                    <div class="row">
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="flux-card mb-4" style="height: auto;">
+                                <h5 class="font-weight-bold mb-3" style="color: #1e293b; font-size: 1.1rem;">🗑️ Detail Sampah Terkumpul</h5>
+                                <div class="row px-1">
+                                    <div class="col-6 p-1">
+                                        <div class="trash-box">
+                                            <div class="trash-title-box">Sampah Organik</div>
+                                            <h4 class="font-weight-bold m-0" style="color: #00a86b; font-size: 1.25rem;" id="organik-val">0 kg</h4>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 p-1">
+                                        <div class="trash-box">
+                                            <div class="trash-title-box">Anorganik (Recycle)</div>
+                                            <h4 class="font-weight-bold m-0" style="color: #3b82f6; font-size: 1.25rem;" id="anorganik-val">0 kg</h4>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 p-1">
+                                        <div class="trash-box">
+                                            <div class="trash-title-box">Sampah B3</div>
+                                            <h4 class="font-weight-bold m-0" style="color: #ea580c; font-size: 1.25rem;" id="b3-val">0 kg</h4>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 p-1">
+                                        <div class="trash-box">
+                                            <div class="trash-title-box">Total Sampah</div>
+                                            <h4 class="font-weight-bold m-0" style="color: #64748b; font-size: 1.25rem;" id="total-sampah-val">0 kg</h4>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="stat-icon-wrapper">🔄</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stat-card">
-                            <div>
-                                <div class="stat-label">Flux Points</div>
-                                <h3 class="stat-value" style="color: #eab308;">150</h3>
+
+                            <div class="flux-card" style="height: auto;">
+                                <h5 class="font-weight-bold mb-2" style="color: #1e293b; font-size: 1.1rem;">💡 Edukasi & Tips Fluxbin</h5>
+                                
+                                <div class="edu-item">
+                                    <div class="edu-title">⚠️ Penanganan Limbah B3 Rumah Tangga</div>
+                                    <small class="text-muted">Jangan mencampur baterai bekas, bohlam lampu, atau kosmetik kedaluwarsa dengan sampah umum karena mengandung zat beracun berbahaya.</small>
+                                </div>
+                                
+                                <div class="edu-item">
+                                    <div class="edu-title">♻️ Pemisahan Material Anorganik Berharga</div>
+                                    <small class="text-muted">Pastikan botol plastik dan kaleng dalam keadaan kosong serta kering sebelum dikumpulkan guna mempermudah rantai pemrosesan ulang.</small>
+                                </div>
+                                
+                                <div class="edu-item">
+                                    <div class="edu-title">🌱 Reduksi Sampah Organik Dapur</div>
+                                    <small class="text-muted">Gunakan sisa sayur atau kulit buah sebagai bahan dasar pembuatan eco-enzyme atau pupuk kompos alami pelindung tanaman.</small>
+                                </div>
+
+                                <div class="edu-item">
+                                    <div class="edu-title">🪙 Tips Meraih Ekstra Flux Points</div>
+                                    <small class="text-muted">Kerapian dan ketepatan pengelompokan jenis sampah saat disetorkan akan langsung diakumulasikan ke sistem penambahan poin bonus.</small>
+                                </div>
                             </div>
-                            <div class="stat-icon-wrapper">🪙</div>
                         </div>
+
+                        <div class="col-md-6 mb-4">
+                            <div class="flux-card">
+                                <h5 class="font-weight-bold mb-1" style="color: #1e293b; font-size: 1.1rem;">📈 Grafik Kontribusi Sampah Bulanan</h5>
+                                <p class="text-muted small mb-4">Tren Pengumpulan Sampah (6 Bulan Terakhir)</p>
+                                <div style="position: relative; height: 350px; width: 100%;">
+                                    <canvas id="fluxMainTrashChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-
-                <div class="row">
-                    
-                    <div class="col-md-6 mb-4">
-                        <div class="flux-card mb-4" style="height: auto;">
-                            <h5 class="font-weight-bold mb-3" style="color: #1e293b; font-size: 1.1rem;">🗑️ Detail Sampah Terkumpul</h5>
-                            <div class="row px-1">
-                                <div class="col-6 p-1">
-                                    <div class="trash-box">
-                                        <div class="trash-title-box">Sampah Organik</div>
-                                        <h4 class="font-weight-bold m-0" style="color: #00a86b; font-size: 1.25rem;">15 kg</h4>
-                                    </div>
-                                </div>
-                                <div class="col-6 p-1">
-                                    <div class="trash-box">
-                                        <div class="trash-title-box">Anorganik (Recycle)</div>
-                                        <h4 class="font-weight-bold m-0" style="color: #3b82f6; font-size: 1.25rem;">20 kg</h4>
-                                    </div>
-                                </div>
-                                <div class="col-6 p-1">
-                                    <div class="trash-box">
-                                        <div class="trash-title-box">Sampah B3</div>
-                                        <h4 class="font-weight-bold m-0" style="color: #ea580c; font-size: 1.25rem;">5 kg</h4>
-                                    </div>
-                                </div>
-                                <div class="col-6 p-1">
-                                    <div class="trash-box">
-                                        <div class="trash-title-box">Lainnya (Other)</div>
-                                        <h4 class="font-weight-bold m-0" style="color: #64748b; font-size: 1.25rem;">2.5 kg</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flux-card" style="height: auto;">
-                            <h5 class="font-weight-bold mb-2" style="color: #1e293b; font-size: 1.1rem;">💡 Edukasi & Tips Fluxbin</h5>
-                            
-                            <div class="edu-item">
-                                <div class="edu-title">⚠️ Penanganan Limbah B3 Rumah Tangga</div>
-                                <small class="text-muted">Jangan mencampur baterai bekas, bohlam lampu, atau kosmetik kedaluwarsa dengan sampah umum karena mengandung zat beracun berbahaya.</small>
-                            </div>
-                            
-                            <div class="edu-item">
-                                <div class="edu-title">♻️ Pemisahan Material Anorganik Berharga</div>
-                                <small class="text-muted">Pastikan botol plastik dan kaleng dalam keadaan kosong serta kering sebelum dikumpulkan guna mempermudah rantai pemrosesan ulang.</small>
-                            </div>
-                            
-                            <div class="edu-item">
-                                <div class="edu-title">🌱 Reduksi Sampah Organik Dapur</div>
-                                <small class="text-muted">Gunakan sisa sayur atau kulit buah sebagai bahan dasar pembuatan eco-enzyme atau pupuk kompos alami pelindung tanaman.</small>
-                            </div>
-
-                            <div class="edu-item">
-                                <div class="edu-title">🪙 Tips Meraih Ekstra Flux Points</div>
-                                <small class="text-muted">Kerapian dan ketepatan pengelompokan jenis sampah saat disetorkan akan langsung diakumulasikan ke sistem penambahan poin bonus.</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 mb-4">
-                        <div class="flux-card">
-                            <h5 class="font-weight-bold mb-1" style="color: #1e293b; font-size: 1.1rem;">📈 Grafik Kontribusi Sampah Bulanan</h5>
-                            <p class="text-muted small mb-4">Tren Pengumpulan Sampah (6 Bulan Terakhir)</p>
-                            <div style="position: relative; height: 350px; width: 100%;">
-                                <canvas id="fluxMainTrashChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                </div> </div> </div> </div> <footer class="text-center py-3 text-muted bg-white mt-5" style="border-top: 1px solid #e2e8f0; font-size: 0.9rem;">
+            </div>
+        </div>
+    </div>
+    
+    <footer class="text-center py-3 text-muted bg-white mt-5" style="border-top: 1px solid #e2e8f0; font-size: 0.9rem;">
         &copy; 2026 Fluxbin. All Rights Reserved.
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            
-            // ====================================================================
-            // 1. LOGIKA DATA DINAMIS DARI LOCALSTORAGE
-            // ====================================================================
-            const dataUser = JSON.parse(localStorage.getItem('userLoggedIn'));
-            
-            if (dataUser) {
-                if(dataUser.namaKepalaKeluarga) {
-                    document.getElementById('nama-val').innerText = dataUser.namaKepalaKeluarga;
-                    document.getElementById('nama-warga-nav').innerText = dataUser.namaKepalaKeluarga;
-                    document.getElementById('welcome-name').innerText = dataUser.namaKepalaKeluarga;
-                }
-                if(dataUser.noKK) {
-                    document.getElementById('kk-val').innerText = dataUser.noKK;
-                }
-                if(dataUser.jumlahAnggota) {
-                    document.getElementById('anggota-val').innerText = dataUser.jumlahAnggota + " Orang";
-                }
-                if(dataUser.alamatDomisili) {
-                    document.getElementById('alamat-val').innerText = dataUser.alamatDomisili;
-                }
-                if(dataUser.emailKontak) {
-                    document.getElementById('email-val').innerText = dataUser.emailKontak;
-                }
-            }
+        // ====================================================================
+        // API BASE URL
+        // ====================================================================
+        const API_BASE = 'http://localhost:8080/api';
+        
+        // ====================================================================
+        // CEK AUTENTIKASI - PASTIKAN USER SUDAH LOGIN
+        // ====================================================================
+        let dataUser = null;
+        
+        try {
+            dataUser = JSON.parse(localStorage.getItem('userLoggedIn'));
+        } catch(e) {
+            console.error('Error parsing user data:', e);
+        }
+        
+        // Jika belum login, redirect ke halaman login
+        if (!dataUser) {
+            alert('Silakan login terlebih dahulu!');
+            window.location.href = 'index.html';
+        }
+        
+        // Cek role - jika bukan keluarga, redirect
+        if (dataUser && dataUser.role !== 'Keluarga' && dataUser.role !== 'keluarga') {
+            alert('Halaman ini hanya untuk Keluarga!');
+            window.location.href = 'index.html';
+        }
 
-            // ====================================================================
-            // 2. LOGIKA GRAFIK BATANG (CHART.JS DENGAN DATA GRUP B3)
-            // ====================================================================
+        // ====================================================================
+        // FUNCTION: TAMPILKAN PROFIL DARI DATA YANG DISIMPAN SAAT LOGIN
+        // ====================================================================
+        function displayProfile(data) {
+            // No KK
+            if(data.noKK) {
+                document.getElementById('kk-val').innerText = data.noKK;
+            } else if(data.noKk) {
+                document.getElementById('kk-val').innerText = data.noKk;
+            } else {
+                document.getElementById('kk-val').innerText = '-';
+            }
+            
+            // Nama Kepala Keluarga
+            let nama = '-';
+            if(data.namaKepalaKeluarga) nama = data.namaKepalaKeluarga;
+            else if(data.namaUser) nama = data.namaUser;
+            else if(data.nama) nama = data.nama;
+            else if(data.namaKepala) nama = data.namaKepala;
+            
+            document.getElementById('nama-val').innerText = nama;
+            document.getElementById('nama-warga-nav').innerText = nama;
+            document.getElementById('welcome-name').innerText = nama;
+            
+            // Jumlah Anggota
+            if(data.jumlahAnggota) {
+                document.getElementById('anggota-val').innerText = data.jumlahAnggota + " Orang";
+            } else if(data.anggota) {
+                document.getElementById('anggota-val').innerText = data.anggota + " Orang";
+            }
+            
+            // Alamat
+            if(data.alamatDomisili) {
+                document.getElementById('alamat-val').innerText = data.alamatDomisili;
+            } else if(data.alamat) {
+                document.getElementById('alamat-val').innerText = data.alamat;
+            }
+            
+            // Email
+            if(data.emailKontak) {
+                document.getElementById('email-val').innerText = data.emailKontak;
+            } else if(data.email) {
+                document.getElementById('email-val').innerText = data.email;
+            }
+            
+            // No Telepon
+            if(data.noTelp) {
+                document.getElementById('telp-val').innerText = data.noTelp;
+            } else if(data.telepon) {
+                document.getElementById('telp-val').innerText = data.telepon;
+            }
+            
+            // Status Iuran (simulasi - nanti dari API transaksi)
+            const statusIuran = document.getElementById('status-iuran');
+            if (data.statusIuran === 'lunas' || !data.statusIuran) {
+                statusIuran.innerHTML = '<div class="badge-lunas">✓ LUNAS (Bulan Ini)</div>';
+            } else {
+                statusIuran.innerHTML = '<div class="badge-tunggakan">⚠️ TUNGGAKAN</div>';
+            }
+        }
+        
+        // ====================================================================
+        // FUNCTION: AMBIL DATA SAMPAH DARI BACKEND API
+        // ====================================================================
+        async function loadSampahData(noKK) {
+            try {
+                const response = await fetch(`${API_BASE}/sampah-masuk/keluarga/${noKK}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const sampahData = await response.json();
+                
+                let totalOrganik = 0;
+                let totalAnorganik = 0;
+                let totalB3 = 0;
+                
+                sampahData.forEach(s => {
+                    const jenis = s.jenisSampah?.namaJenis?.toLowerCase() || s.kategori?.toLowerCase() || '';
+                    const jumlah = s.jumlahMasuk || 0;
+                    
+                    if (jenis.includes('organik')) {
+                        totalOrganik += jumlah;
+                    } else if (jenis.includes('anorganik')) {
+                        totalAnorganik += jumlah;
+                    } else if (jenis.includes('b3')) {
+                        totalB3 += jumlah;
+                    } else {
+                        // Jika tidak terdeteksi, coba berdasarkan field lain
+                        if (s.jenisSampah?.idJenis === 1) totalOrganik += jumlah;
+                        else if (s.jenisSampah?.idJenis === 2) totalAnorganik += jumlah;
+                        else if (s.jenisSampah?.idJenis === 3) totalB3 += jumlah;
+                    }
+                });
+                
+                const totalSampah = totalOrganik + totalAnorganik + totalB3;
+                const totalSetoran = sampahData.length;
+                
+                // Update DOM
+                document.getElementById('organik-val').innerHTML = totalOrganik + ' kg';
+                document.getElementById('anorganik-val').innerHTML = totalAnorganik + ' kg';
+                document.getElementById('b3-val').innerHTML = totalB3 + ' kg';
+                document.getElementById('total-sampah-val').innerHTML = totalSampah + ' kg';
+                document.getElementById('total-disetor').innerHTML = totalSampah + ' <span style="font-size: 1rem; font-weight: 600; color: #64748b;">kg</span>';
+                document.getElementById('total-setoran').innerHTML = totalSetoran + ' <span style="font-size: 1rem; font-weight: 600; color: #64748b;">kali</span>';
+                
+                // Flux points: 10 poin per kg
+                document.getElementById('flux-points').innerText = Math.floor(totalSampah * 10);
+                
+                return { success: true, data: sampahData };
+                
+            } catch (error) {
+                console.error('Error loading sampah data:', error);
+                return { success: false, error: error.message };
+            }
+        }
+        
+        // ====================================================================
+        // FUNCTION: AMBIL DATA TRANSAKSI (untuk status iuran)
+        // ====================================================================
+        async function loadTransaksiData(noKK) {
+            try {
+                const response = await fetch(`${API_BASE}/transaksi/keluarga/${noKK}`);
+                
+                if (!response.ok) {
+                    return { success: false };
+                }
+                
+                const transaksiData = await response.json();
+                
+                // Cek apakah ada transaksi yang belum bayar
+                const hasTunggakan = transaksiData.some(t => t.status === 'belum_bayar');
+                
+                const statusIuran = document.getElementById('status-iuran');
+                if (!hasTunggakan) {
+                    statusIuran.innerHTML = '<div class="badge-lunas">✓ LUNAS (Bulan Ini)</div>';
+                } else {
+                    statusIuran.innerHTML = '<div class="badge-tunggakan">⚠️ TUNGGKAN</div>';
+                }
+                
+                return { success: true, hasTunggakan };
+                
+            } catch (error) {
+                console.error('Error loading transaksi data:', error);
+                return { success: false };
+            }
+        }
+        
+        // ====================================================================
+        // FUNCTION: VALIDASI TOKEN / SESSION
+        // ====================================================================
+        async function validateSession() {
+            // Di sini bisa ditambahkan validasi token ke backend
+            // Untuk sementara, kita asumsikan session valid
+            return true;
+        }
+        
+        // ====================================================================
+        // FUNCTION: RENDER GRAFIK
+        // ====================================================================
+        let chartInstance = null;
+        
+        function renderChart(sampahData) {
             const ctx = document.getElementById('fluxMainTrashChart').getContext('2d');
-            new Chart(ctx, {
+            
+            // Jika sudah ada chart, destroy dulu
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+            
+            // Data untuk grafik (bisa dari data real atau simulasi)
+            // Untuk grafik bulanan, kita bisa hitung dari data real
+            // Tapi untuk sementara pakai data simulasi yang menarik
+            
+            chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: ['Des 25', 'Jan 26', 'Feb 26', 'Mar 26', 'Apr 26', 'Mei 26'],
@@ -374,19 +624,19 @@
                         {
                             label: 'Organik (kg)',
                             data: [15, 14, 16, 18, 20, 15],
-                            backgroundColor: '#00a86b', // Hijau Fluxbin
+                            backgroundColor: '#00a86b',
                             borderRadius: 4
                         },
                         {
                             label: 'Anorganik (kg)',
                             data: [7, 9, 12, 13, 14, 20],
-                            backgroundColor: '#3b82f6', // Biru
+                            backgroundColor: '#3b82f6',
                             borderRadius: 4
                         },
                         {
                             label: 'B3 (kg)',
                             data: [2, 3, 3, 4, 3, 5],
-                            backgroundColor: '#ea580c', // Oranye Merah B3
+                            backgroundColor: '#ea580c',
                             borderRadius: 4
                         }
                     ]
@@ -400,20 +650,90 @@
                         }
                     },
                     scales: {
-                        x: {
-                            grid: { display: false }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Berat (kg)'
-                            }
+                        x: { grid: { display: false } },
+                        y: { 
+                            beginAtZero: true, 
+                            title: { display: true, text: 'Berat (kg)' } 
                         }
                     }
                 }
             });
-
+        }
+        
+        // ====================================================================
+        // MAIN FUNCTION: LOAD SEMUA DATA
+        // ====================================================================
+        async function loadDashboard() {
+            const loadingDiv = document.getElementById('loading-container');
+            const contentDiv = document.getElementById('dashboard-content');
+            const errorDiv = document.getElementById('error-container');
+            
+            // Tampilkan loading, sembunyikan konten
+            loadingDiv.style.display = 'block';
+            contentDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            
+            // Validasi session
+            const isValid = await validateSession();
+            if (!isValid) {
+                loadingDiv.style.display = 'none';
+                errorDiv.style.display = 'block';
+                errorDiv.innerText = 'Sesi Anda telah berakhir. Silakan login kembali.';
+                setTimeout(() => {
+                    localStorage.removeItem('userLoggedIn');
+                    window.location.href = 'index.html';
+                }, 2000);
+                return;
+            }
+            
+            // Tampilkan profil dari data yang tersimpan
+            displayProfile(dataUser);
+            
+            // Ambil no KK
+            const noKK = dataUser?.noKK || dataUser?.noKk;
+            
+            if (!noKK) {
+                loadingDiv.style.display = 'none';
+                errorDiv.style.display = 'block';
+                errorDiv.innerText = 'Data Nomor KK tidak ditemukan. Silakan login kembali.';
+                setTimeout(() => {
+                    localStorage.removeItem('userLoggedIn');
+                    window.location.href = 'index.html';
+                }, 2000);
+                return;
+            }
+            
+            // Load data sampah
+            const sampahResult = await loadSampahData(noKK);
+            
+            // Load data transaksi (opsional, untuk status iuran)
+            await loadTransaksiData(noKK);
+            
+            // Render grafik
+            renderChart(sampahResult.success ? sampahResult.data : []);
+            
+            // Sembunyikan loading, tampilkan konten
+            loadingDiv.style.display = 'none';
+            contentDiv.style.display = 'block';
+        }
+        
+        // ====================================================================
+        // EVENT LISTENERS
+        // ====================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+        });
+        
+        // Logout
+        document.getElementById('logout-btn')?.addEventListener('click', function() {
+            localStorage.removeItem('userLoggedIn');
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        });
+        
+        // Tombol Profil
+        document.getElementById('profile-btn')?.addEventListener('click', function() {
+            window.location.href = 'ProfilKeluarga.html';
         });
     </script>
 </body>
