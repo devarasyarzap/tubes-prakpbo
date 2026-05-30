@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.model.Admin;
 import com.example.demo.model.Keluarga;
+import com.example.demo.model.Pegawai;
+import com.example.demo.repository.AdminRepository;
 import com.example.demo.repository.KeluargaRepository;
+import com.example.demo.repository.PegawaiRepository;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -22,13 +26,20 @@ public class AuthController {
 
     @Autowired
     private KeluargaRepository keluargaRepository;
+    
+    @Autowired
+    private PegawaiRepository pegawaiRepository;
+    
+    @Autowired
+    private AdminRepository adminRepository;
 
+    // ========== LOGIN KELUARGA ==========
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
         String email = request.get("email");
         String password = request.get("password");
 
-        System.out.println("Login attempt: email=" + email + ", password=" + password);
+        System.out.println("Login attempt (Keluarga): email=" + email);
 
         Optional<Keluarga> userOpt = keluargaRepository.findByEmailAndPassword(email, password);
 
@@ -47,6 +58,73 @@ public class AuthController {
             data.put("emailKontak", user.getEmail());
             data.put("noTelp", user.getNoTelp());
             data.put("role", user.getRole());
+            
+            response.put("data", data);
+
+            return ResponseEntity.ok(response);
+        } else {
+            Map<String, Object> error = new HashMap<>();
+            error.put("success", false);
+            error.put("message", "Email atau password salah!");
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+    
+    // ========== LOGIN PEGAWAI ==========
+    @PostMapping("/login/pegawai")
+    public ResponseEntity<?> loginPegawai(@RequestBody Map<String, String> request) {
+        String namaPegawai = request.get("nama");
+        String password = request.get("password");
+
+        System.out.println("Login attempt (Pegawai): nama=" + namaPegawai);
+
+        Optional<Pegawai> pegawaiOpt = pegawaiRepository.findByNamaPegawaiAndPassword(namaPegawai, password);
+
+        if (pegawaiOpt.isPresent()) {
+            Pegawai pegawai = pegawaiOpt.get();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Login berhasil");
+            
+            Map<String, Object> data = new HashMap<>();
+            data.put("idPegawai", pegawai.getIdPegawai());
+            data.put("namaPegawai", pegawai.getNamaPegawai());
+            data.put("role", pegawai.getRole());
+            
+            response.put("data", data);
+
+            return ResponseEntity.ok(response);
+        } else {
+            Map<String, Object> error = new HashMap<>();
+            error.put("success", false);
+            error.put("message", "Nama atau password salah!");
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+    
+    // ========== LOGIN ADMIN ==========
+    @PostMapping("/login/admin")
+    public ResponseEntity<?> loginAdmin(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String password = request.get("password");
+
+        System.out.println("Login attempt (Admin): email=" + email);
+
+        Optional<Admin> adminOpt = adminRepository.findByEmailAndPassword(email, password);
+
+        if (adminOpt.isPresent()) {
+            Admin admin = adminOpt.get();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Login berhasil");
+            
+            Map<String, Object> data = new HashMap<>();
+            data.put("idAdmin", admin.getIdAdmin());
+            data.put("namaAdmin", admin.getNamaAdmin());
+            data.put("email", admin.getEmail());
+            data.put("role", admin.getRole());
             
             response.put("data", data);
 

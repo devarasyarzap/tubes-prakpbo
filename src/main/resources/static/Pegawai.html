@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fluxbin - Portal Petugas</title>
+    <title>Fluxbin - Dashboard Pegawai</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             background-color: #f8fafc;
@@ -24,13 +25,17 @@
         .logo-svg-container {
             width: 32px;
             height: 32px;
+            background-color: #00a86b;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 6px;
         }
         .logo-svg {
             width: 100%;
             height: 100%;
+            fill: #ffffff;
         }
         .logo-text {
             font-weight: 800;
@@ -54,61 +59,161 @@
             align-items: center;
             gap: 6px;
         }
+        .sidebar {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            height: calc(100vh - 100px);
+            position: sticky;
+            top: 20px;
+        }
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-nav li {
+            margin-bottom: 8px;
+        }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #64748b;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.2s;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background-color: #00a86b10;
+            color: #00a86b;
+            font-weight: 600;
+        }
         .flux-card {
             background: #ffffff;
             border-radius: 16px;
             border: 1px solid #e2e8f0;
-            padding: 32px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01);
+            padding: 24px;
+            margin-bottom: 20px;
         }
-        .form-control {
+        .stat-card {
+            background: #ffffff;
+            border-radius: 14px;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            background-color: #ffffff;
-            color: #334155;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
         }
-        .form-control:focus {
-            border-color: #00a86b;
-            box-shadow: 0 0 0 0.2rem rgba(0, 168, 107, 0.15);
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0;
         }
         .btn-flux {
             background-color: #00a86b;
-            color: #ffffff;
+            color: white;
             font-weight: 700;
-            border-radius: 8px;
-            padding: 10px 24px;
+            padding: 12px 24px;
+            border-radius: 12px;
             border: none;
             transition: background-color 0.2s;
+            cursor: pointer;
         }
         .btn-flux:hover {
             background-color: #008754;
+        }
+        .btn-outline {
+            background-color: #00a86b;
             color: #ffffff;
-        }
-        .btn-reset {
-            background-color: #f1f5f9;
-            color: #475569;
             font-weight: 600;
-            border-radius: 8px;
-            padding: 10px 20px;
+            padding: 8px 20px;
+            border-radius: 24px;
             border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 168, 107, 0.2);
             transition: background-color 0.2s;
+            cursor: pointer;
         }
-        .btn-reset:hover {
-            background-color: #e2e8f0;
-            color: #334155;
+        .btn-outline:hover {
+            background-color: #008754;
         }
-        .form-section-title {
-            font-size: 1.15rem;
+        .table-flux thead th {
+            background-color: #f1f5f9;
             font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 16px;
-        }
-        .form-label-custom {
             font-size: 0.75rem;
-            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
+            padding: 14px;
+        }
+        .table-flux tbody td {
+            padding: 14px;
+            vertical-align: middle;
+            font-size: 0.85rem;
+        }
+        .badge-organik {
+            background-color: #00a86b20;
+            color: #00a86b;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+        .badge-anorganik {
+            background-color: #3b82f620;
+            color: #3b82f6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+        .badge-b3 {
+            background-color: #ea580c20;
+            color: #ea580c;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+        .logout-btn {
+            background-color: #ef4444;
+            margin-left: 10px;
+        }
+        .logout-btn:hover {
+            background-color: #dc2626;
+        }
+        .icon {
+            font-size: 1.1rem;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .btn-input-sampah {
+            background: linear-gradient(135deg, #00a86b 0%, #008754 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: none;
+            width: 100%;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn-input-sampah:hover {
+            transform: translateY(-2px);
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #94a3b8;
         }
     </style>
 </head>
@@ -117,110 +222,290 @@
     <nav class="navbar navbar-flux justify-content-between align-items-center">
         <div class="logo-container">
             <div class="logo-svg-container">
-                <svg class="logo-svg" viewBox="0 0 81 92" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M72.2609 23.3913H60.4348V19.3043C60.4348 13.6817 55.8435 9.04348 50.1739 9.04348H30.8261C25.1565 9.04348 20.5652 13.6817 20.5652 19.3043V23.3913H8.73913C4.85217 23.3913 1.65217 26.5913 1.65217 30.4783C1.65217 34.3652 4.85217 37.5652 8.73913 37.5652H12.3948L17.7817 76.1087C18.4557 80.953 22.5696 84.6087 27.4661 84.6087H53.5339C58.4304 84.6087 62.5443 80.953 63.2183 76.1087L68.6052 37.5652H72.2609C76.1478 37.5652 79.3478 34.3652 79.3478 30.4783C79.3478 26.5913 76.1478 23.3913 72.2609 23.3913ZM27.6522 19.3043C27.6522 17.5817 29.0478 16.1304 30.8261 16.1304H50.1739C51.9522 16.1304 53.3478 17.5817 53.3478 19.3043V23.3913H27.6522V19.3043ZM44.087 64.9565V51.8696H53.113L40.5 37.3478L27.887 51.8696H36.913V64.9565H44.087Z" fill="#00A86B"/>
+                <svg viewBox="0 0 24 24" style="width:100%; height:100%;">
+                    <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm5-9h2v4h3l-4 4-4-4h3v-4z" fill="white"/>
                 </svg>
             </div>
             <div class="logo-text">FLUX<span class="logo-highlight">BIN</span></div>
         </div>
-        <div>
-            <span class="badge-pegawai">👷 Petugas Lapangan</span>
+        <div class="nav-buttons">
+            <span class="badge-pegawai">
+                <span class="icon">👷</span>
+                <span id="nama-pegawai-nav">Petugas</span>
+            </span>
+            <button class="btn-outline logout-btn" id="logout-btn" style="color:white; background:#ef4444; border:none;">
+                <span class="icon">🚪</span>
+                Logout
+            </button>
         </div>
     </nav>
 
-    <div class="container py-5">
-        <div class="row justify-content-center">
+    <div class="container-fluid px-4 py-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 mb-4">
+                <div class="sidebar">
+                    <!-- Tombol Input Sampah -->
+                    <button class="btn-input-sampah" onclick="window.location.href='TambahSampah.html'">
+                        ✍️ Setoran Sampah
+                    </button>
+                    
+                    <ul class="sidebar-nav">
+                        <li><a onclick="showSection('dashboard')" id="menu-dashboard" class="active">📊 Dashboard</a></li>
+                        <li><a onclick="showSection('riwayat')" id="menu-riwayat">📋 Riwayat Setoran</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
             <div class="col-md-9">
-                
-                <div class="mb-4">
-                    <h2 class="font-weight-bold" style="color: #1e293b; font-size: 2rem;">✍️ Pencatatan Setoran Sampah Warga</h2>
-                    <p class="text-muted" style="font-size: 0.95rem;">Gunakan form ini untuk memasukkan berat timbangan sampah yang dibawa oleh warga secara riil.</p>
+                <!-- Dashboard Section -->
+                <div id="dashboard-section">
+                    <div class="mb-4">
+                        <h2 class="font-weight-bold" style="color: #1e293b;">📊 Dashboard Petugas</h2>
+                        <p class="text-muted">Selamat datang, <span id="welcome-name">Petugas</span>! Pantau statistik setoran sampah warga di sini.</p>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card">
+                                <div>
+                                    <div class="stat-label text-muted small">Total Sampah</div>
+                                    <h3 class="stat-value" id="total-sampah">0 <span class="small">kg</span></h3>
+                                </div>
+                                <div class="stat-icon-wrapper">🗑️</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card">
+                                <div>
+                                    <div class="stat-label text-muted small">Total Setoran</div>
+                                    <h3 class="stat-value" id="total-setoran">0 <span class="small">kali</span></h3>
+                                </div>
+                                <div class="stat-icon-wrapper">📋</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card">
+                                <div>
+                                    <div class="stat-label text-muted small">Keluarga Aktif</div>
+                                    <h3 class="stat-value" id="total-keluarga">0 <span class="small">KK</span></h3>
+                                </div>
+                                <div class="stat-icon-wrapper">👨‍👩‍👧‍👦</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="flux-card">
+                                <h5 class="font-weight-bold mb-3">📊 Sampah per Jenis</h5>
+                                <canvas id="chartJenis" height="200"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="flux-card">
+                                <h5 class="font-weight-bold mb-3">📈 Setoran per Bulan</h5>
+                                <canvas id="chartBulan" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flux-card">
+                        <h5 class="font-weight-bold mb-3">🔄 Setoran Terbaru</h5>
+                        <div class="table-responsive">
+                            <table class="table table-flux">
+                                <thead>
+                                    <tr>
+                                        <th>No KK</th>
+                                        <th>Nama Keluarga</th>
+                                        <th>Jenis</th>
+                                        <th>Jumlah</th>
+                                        <th>Tanggal</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-table">
+                                    <tr><td colspan="5" class="text-center">Memuat data...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="flux-card">
-                    <form id="formInputSampah">
-                        
-                        <div class="form-section-title">1. Data Pemilik Sampah</div>
-                        <div class="form-group mb-4">
-                            <label class="form-label-custom text-secondary">NOMOR KARTU KELUARGA (KK) WARGA</label>
-                            <input type="text" class="form-control form-control-lg" id="inputNoKK" placeholder="Contoh: 3273000000000000" style="font-size: 1rem;" required>
-                        </div>
-                        
-                        <hr class="my-4" style="border-top: 1px dashed #e2e8f0;">
-
-                        <div class="form-section-title">2. Berat Timbangan (Kilogram)</div>
-                        <div class="row">
-                            <div class="col-md-6 form-group mb-3">
-                                <label class="form-label-custom text-success">SAMPAH ORGANIK (KG)</label>
-                                <input type="number" step="0.1" class="form-control form-control-lg" id="beratOrganik" value="0" min="0" style="font-size: 1rem;" required>
-                            </div>
-                            <div class="col-md-6 form-group mb-3">
-                                <label class="form-label-custom text-primary">ANORGANIK / RECYCLE (KG)</label>
-                                <input type="number" step="0.1" class="form-control form-control-lg" id="beratAnorganik" value="0" min="0" style="font-size: 1rem;" required>
-                            </div>
-                            <div class="col-md-6 form-group mb-3">
-                                <label class="form-label-custom text-danger">LIMBAH B3 (KG)</label>
-                                <input type="number" step="0.1" class="form-control form-control-lg" id="beratB3" value="0" min="0" style="font-size: 1rem;" required>
-                            </div>
-                            <div class="col-md-6 form-group mb-3">
-                                <label class="form-label-custom text-secondary">LAINNYA / OTHER (KG)</label>
-                                <input type="number" step="0.1" class="form-control form-control-lg" id="beratLainnya" value="0" min="0" style="font-size: 1rem;" required>
+                <!-- Riwayat Section -->
+                <div id="riwayat-section" style="display: none;">
+                    <div class="flux-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="font-weight-bold mb-0">📋 Semua Riwayat Setoran</h5>
+                            <div>
+                                <input type="text" id="searchRiwayat" class="form-control form-control-sm" placeholder="🔍 Cari No KK..." style="width: 200px;">
                             </div>
                         </div>
-
-                        <hr class="my-4" style="border-top: 1px dashed #e2e8f0;">
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <button type="reset" class="btn btn-reset mr-2">Reset Form</button>
-                            <button type="submit" class="btn btn-flux">Simpan Setoran</button>
+                        <div class="table-responsive">
+                            <table class="table table-flux">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>No KK</th>
+                                        <th>Jenis Sampah</th>
+                                        <th>Jumlah (kg)</th>
+                                        <th>Tanggal</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="riwayat-table-body">
+                                    <tr><td colspan="5" class="text-center">Memuat data...</td></tr>
+                                </tbody>
+                            </table>
                         </div>
-
-                    </form>
+                    </div>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <footer class="text-center py-3 text-muted bg-white mt-5" style="border-top: 1px solid #e2e8f0; font-size: 0.9rem;">
-        &copy; 2026 Fluxbin. All Rights Reserved.
-    </footer>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        document.getElementById('formInputSampah').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const dataSetoran = {
-                noKK: document.getElementById('inputNoKK').value,
-                organik: parseFloat(document.getElementById('beratOrganik').value),
-                anorganik: parseFloat(document.getElementById('beratAnorganik').value),
-                b3: parseFloat(document.getElementById('beratB3').value),
-                lainnya: parseFloat(document.getElementById('beratLainnya').value)
-            };
-
-            // Silakan sesuaikan URL endpoint controller Spring Boot Anda
-            const apiUrl = 'http://localhost:8080/api/sampah/simpan'; 
-
-            fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dataSetoran)
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Data transaksi setoran sampah warga berhasil direkam ke sistem!');
-                    document.getElementById('formInputSampah').reset();
-                } else {
-                    alert('Gagal merekam data! Mohon periksa kembali keselarasan nomor KK.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Koneksi ke backend terputus! Pastikan server aplikasi Java Spring Boot Anda telah dijalankan.');
-            });
+        const API_BASE = 'http://localhost:8080/api';
+        let chartJenis, chartBulan;
+        
+        // Ambil data user dari localStorage
+        const dataUser = JSON.parse(localStorage.getItem('userLoggedIn'));
+        
+        if (!dataUser) {
+            alert('Silakan login terlebih dahulu!');
+            window.location.href = 'index.html';
+        }
+        
+        if (dataUser.role !== 'Pegawai' && dataUser.role !== 'pegawai') {
+            alert('Halaman ini hanya untuk Pegawai!');
+            window.location.href = 'index.html';
+        }
+        
+        // Tampilkan nama pegawai
+        const namaPegawai = dataUser.namaPegawai || dataUser.nama || 'Petugas';
+        document.getElementById('nama-pegawai-nav').innerText = namaPegawai;
+        document.getElementById('welcome-name').innerText = namaPegawai;
+        
+        // ========== SECTION NAVIGATION ==========
+        function showSection(section) {
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('riwayat-section').style.display = 'none';
+            
+            document.getElementById(`${section}-section`).style.display = 'block';
+            
+            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+            document.getElementById(`menu-${section}`).classList.add('active');
+            
+            if (section === 'dashboard') loadDashboard();
+            if (section === 'riwayat') loadRiwayat();
+        }
+        
+        // ========== LOAD DASHBOARD ==========
+        async function loadDashboard() {
+            try {
+                const [sampahRes, keluargaRes] = await Promise.all([
+                    fetch(`${API_BASE}/sampah-masuk`),
+                    fetch(`${API_BASE}/keluarga`)
+                ]);
+                
+                const sampahData = await sampahRes.json();
+                const keluargaData = await keluargaRes.json();
+                
+                // Hitung total
+                let totalSampah = 0;
+                let totalOrganik = 0, totalAnorganik = 0, totalB3 = 0;
+                let perBulan = {};
+                
+                sampahData.forEach(s => {
+                    const jumlah = s.jumlahMasuk || 0;
+                    totalSampah += jumlah;
+                    
+                    const jenis = s.jenisSampah?.namaJenis?.toLowerCase() || '';
+                    if (jenis.includes('organik')) totalOrganik += jumlah;
+                    else if (jenis.includes('anorganik')) totalAnorganik += jumlah;
+                    else if (jenis.includes('b3')) totalB3 += jumlah;
+                    
+                    // Kelompokkan per bulan
+                    if (s.tanggalMasuk) {
+                        const bulan = new Date(s.tanggalMasuk).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+                        perBulan[bulan] = (perBulan[bulan] || 0) + jumlah;
+                    }
+                });
+                
+                document.getElementById('total-sampah').innerHTML = totalSampah.toFixed(1) + ' <span class="small">kg</span>';
+                document.getElementById('total-setoran').innerHTML = sampahData.length + ' <span class="small">kali</span>';
+                document.getElementById('total-keluarga').innerHTML = keluargaData.length + ' <span class="small">KK</span>';
+                
+                // Chart Jenis
+                if (chartJenis) chartJenis.destroy();
+                chartJenis = new Chart(document.getElementById('chartJenis'), {
+                    type: 'doughnut',
+                    data: { labels: ['Organik', 'Anorganik', 'B3'], datasets: [{ data: [totalOrganik, totalAnorganik, totalB3], backgroundColor: ['#00a86b', '#3b82f6', '#ea580c'] }] }
+                });
+                
+                // Chart Bulan
+                const bulanLabels = Object.keys(perBulan).slice(-6);
+                const bulanData = bulanLabels.map(l => perBulan[l]);
+                if (chartBulan) chartBulan.destroy();
+                chartBulan = new Chart(document.getElementById('chartBulan'), {
+                    type: 'bar',
+                    data: { labels: bulanLabels, datasets: [{ label: 'Total Sampah (kg)', data: bulanData, backgroundColor: '#00a86b', borderRadius: 4 }] }
+                });
+                
+                // Recent
+                const recent = [...sampahData].sort((a,b) => new Date(b.tanggalMasuk) - new Date(a.tanggalMasuk)).slice(0,5);
+                const keluargaMap = {};
+                keluargaData.forEach(k => { keluargaMap[k.noKk || k.idUser] = k.namaKepala || k.namaUser; });
+                
+                document.getElementById('recent-table').innerHTML = recent.map(s => `
+                    <tr>
+                        <td>${s.noKk}</td>
+                        <td>${keluargaMap[s.noKk] || '-'}</td>
+                        <td><span class="badge-${s.jenisSampah?.namaJenis?.toLowerCase().includes('organik') ? 'organik' : s.jenisSampah?.namaJenis?.toLowerCase().includes('anorganik') ? 'anorganik' : 'b3'}">${s.jenisSampah?.namaJenis || '-'}</span></td>
+                        <td>${s.jumlahMasuk} kg</td>
+                        <td>${new Date(s.tanggalMasuk).toLocaleDateString('id-ID')}</td>
+                    </tr>
+                `).join('');
+            } catch(e) { console.error(e); }
+        }
+        
+        // ========== LOAD RIWAYAT ==========
+        async function loadRiwayat() {
+            try {
+                const response = await fetch(`${API_BASE}/sampah-masuk`);
+                const data = await response.json();
+                const sorted = [...data].sort((a,b) => new Date(b.tanggalMasuk) - new Date(a.tanggalMasuk));
+                
+                document.getElementById('riwayat-table-body').innerHTML = sorted.map((s, i) => `
+                    <tr>
+                        <td>${s.noSampah || i+1}</td>
+                        <td>${s.noKk}</td>
+                        <td><span class="badge-${s.jenisSampah?.namaJenis?.toLowerCase().includes('organik') ? 'organik' : s.jenisSampah?.namaJenis?.toLowerCase().includes('anorganik') ? 'anorganik' : 'b3'}">${s.jenisSampah?.namaJenis || '-'}</span></td>
+                        <td>${s.jumlahMasuk} kg</td>
+                        <td>${new Date(s.tanggalMasuk).toLocaleDateString('id-ID')}</td>
+                    </table>
+                `).join('');
+                
+                // Search filter
+                document.getElementById('searchRiwayat').onkeyup = function() {
+                    const filter = this.value.toLowerCase();
+                    const rows = document.querySelectorAll('#riwayat-table-body tr');
+                    rows.forEach(row => {
+                        const text = row.innerText.toLowerCase();
+                        row.style.display = text.includes(filter) ? '' : 'none';
+                    });
+                };
+            } catch(e) { console.error(e); }
+        }
+        
+        // ========== LOGOUT ==========
+        document.getElementById('logout-btn')?.addEventListener('click', () => {
+            localStorage.removeItem('userLoggedIn');
+            window.location.href = 'index.html';
         });
+        
+        // Load dashboard default
+        loadDashboard();
     </script>
 </body>
 </html>

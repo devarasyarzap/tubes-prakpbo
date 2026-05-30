@@ -11,21 +11,365 @@
         .navbar-flux { background: white; border-bottom: 1px solid #e2e8f0; padding: 12px 30px; }
         .logo-text { font-weight: 800; font-size: 1.6rem; color: #00a86b; }
         .flux-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; padding: 24px; margin-bottom: 20px; }
-        .btn-print { background: #00a86b; color: white; border: none; padding: 10px 24px; border-radius: 8px; }
-        @media print { .no-print { display: none; } body { background: white; } .flux-card { box-shadow: none; border: 1px solid #ddd; } }
+        .btn-print { background: #00a86b; color: white; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; }
+        .btn-print:hover { background-color: #008754; }
+        .btn-refresh { background: #3b82f6; color: white; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; margin-right: 10px; }
+        .btn-refresh:hover { background-color: #2563eb; }
+        .btn-dashboard { background: #8b5cf6; color: white; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; margin-right: 10px; }
+        .btn-dashboard:hover { background-color: #7c3aed; }
+        .loading { text-align: center; padding: 50px; color: #94a3b8; }
+        .date-filter { display: flex; gap: 10px; align-items: center; justify-content: flex-end; margin-bottom: 20px; }
+        .date-filter input { padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; }
+        .total-sampah-besar { font-size: 3rem; font-weight: 800; color: #00a86b; }
+        @media print { 
+            .no-print { display: none; } 
+            body { background: white; } 
+            .flux-card { box-shadow: none; border: 1px solid #ddd; } 
+        }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-flux no-print">
         <div class="logo-text">FLUX<span style="color:#1e293b">BIN</span></div>
-        <div><button class="btn-print" onclick="window.print()">🖨️ Cetak Laporan</button></div>
+        <div>
+            <button class="btn-dashboard" onclick="window.location.href='admin.html'">📊 Dashboard Admin</button>
+            <button class="btn-refresh" id="refreshBtn" onclick="loadLaporan()">🔄 Refresh Data</button>
+            <button class="btn-print" onclick="window.print()">🖨️ Cetak Laporan</button>
+        </div>
     </nav>
+    
     <div class="container py-4">
-        <div class="text-center mb-4"><h2>Laporan Sistem Fluxbin</h2><p>Periode: Mei 2026</p></div>
-        <div class="row"><div class="col-md-6"><div class="flux-card"><h5>📊 Total Sampah per Jenis</h5><canvas id="laporan-chart-jenis" height="200"></canvas></div></div>
-        <div class="col-md-6"><div class="flux-card"><h5>💰 Pendapatan Iuran</h5><p class="display-4 text-success">Rp 2.500.000</p><p>Total KK Aktif: 45 | Tunggakan: 3 KK</p></div></div></div>
-        <div class="flux-card"><h5>📋 Rincian Setoran Sampah Bulan Ini</h5><table class="table"><thead><tr><th>No KK</th><th>Nama Keluarga</th><th>Total Sampah (kg)</th></tr></thead><tbody><tr><td>3273000001</td><td>Keluarga Budi</td><td>28.5 kg</td></tr><tr><td>3273000002</td><td>Keluarga Ani</td><td>35.2 kg</td></tr><tr><td>3273000003</td><td>Keluarga Caca</td><td>18.7 kg</td></tr></tbody></table></div>
+        <div class="text-center mb-4">
+            <h2>Laporan Sistem Fluxbin</h2>
+            <p id="periode-text" class="text-muted">Memuat data...</p>
+        </div>
+        
+        <div id="loading-container" class="loading">
+            <div class="spinner-border text-success" role="status"></div>
+            <p class="mt-2">Memuat data laporan...</p>
+        </div>
+        
+        <div id="laporan-content" style="display: none;">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="flux-card">
+                        <h5>📊 Total Sampah per Jenis</h5>
+                        <canvas id="laporan-chart-jenis" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="flux-card">
+                        <h5>💰 Ringkasan Keuangan</h5>
+                        <p class="display-4 text-success" id="total-pendapatan">Rp0</p>
+                        <p id="ringkasan-keuangan">Total KK Aktif: 0 | Tunggakan: 0 KK</p>
+                        <hr>
+                        <p><strong>💵 Pendapatan per Bulan:</strong> <span id="pendapatan-per-bulan">Rp0</span></p>
+                        <p><strong>📋 Total Transaksi:</strong> <span id="total-transaksi">0</span> kali</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="flux-card">
+                        <h5>📈 Tren Sampah Bulanan</h5>
+                        <canvas id="chart-tren-bulanan" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flux-card">
+                <h5>📋 Rincian Setoran Sampah Bulan Ini</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>No KK</th>
+                                <th>Nama Keluarga</th>
+                                <th>Total Sampah (kg)</th>
+                                <th>Organik (kg)</th>
+                                <th>Anorganik (kg)</th>
+                                <th>B3 (kg)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rincian-sampah-body">
+                            <tr><td colspan="6" class="text-center">Memuat data...</td></tr>
+                        </tbody>
+                        <tfoot class="bg-light">
+                            <tr>
+                                <th colspan="2" class="text-end">GRAND TOTAL:</th>
+                                <th id="grand-total-sampah">0 kg</th>
+                                <th id="grand-total-organik">0 kg</th>
+                                <th id="grand-total-anorganik">0 kg</th>
+                                <th id="grand-total-b3">0 kg</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="flux-card">
+                <h5>📋 Status Iuran Keluarga</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>No KK</th>
+                                <th>Nama Keluarga</th>
+                                <th>Status Iuran</th>
+                                <th>Tanggal Bayar Terakhir</th>
+                            </tr>
+                        </thead>
+                        <tbody id="status-iuran-body">
+                            <tr><td colspan="4" class="text-center">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    <script>new Chart(document.getElementById('laporan-chart-jenis'), { type: 'doughnut', data: { labels: ['Organik', 'Anorganik', 'B3'], datasets: [{ data: [245, 380, 95], backgroundColor: ['#00a86b', '#3b82f6', '#ef4444'] }] } });</script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+        let chartJenis, chartTren;
+        
+        // ========== AMBIL DATA DARI BACKEND ==========
+        async function loadLaporan() {
+            const loadingDiv = document.getElementById('loading-container');
+            const contentDiv = document.getElementById('laporan-content');
+            
+            loadingDiv.style.display = 'block';
+            contentDiv.style.display = 'none';
+            
+            try {
+                // Ambil data dari API
+                const [sampahRes, keluargaRes, transaksiRes] = await Promise.all([
+                    fetch(`${API_BASE}/sampah-masuk`),
+                    fetch(`${API_BASE}/keluarga`),
+                    fetch(`${API_BASE}/transaksi`)
+                ]);
+                
+                const sampahData = await sampahRes.json();
+                const keluargaData = await keluargaRes.json();
+                const transaksiData = await transaksiRes.json();
+                
+                console.log('Sampah Data:', sampahData);
+                console.log('Keluarga Data:', keluargaData);
+                console.log('Transaksi Data:', transaksiData);
+                
+                // Proses data
+                processLaporanData(sampahData, keluargaData, transaksiData);
+                
+                // Update periode
+                const now = new Date();
+                document.getElementById('periode-text').innerHTML = `Periode: ${now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })} | Data real-time dari database`;
+                
+                loadingDiv.style.display = 'none';
+                contentDiv.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                loadingDiv.innerHTML = `
+                    <div class="text-danger">
+                        ❌ Gagal memuat data: ${error.message}<br>
+                        Pastikan backend berjalan di ${API_BASE}
+                    </div>
+                `;
+            }
+        }
+        
+        // ========== PROSES DATA LAPORAN ==========
+        function processLaporanData(sampahData, keluargaData, transaksiData) {
+            // Buat mapping keluarga
+            const keluargaMap = {};
+            keluargaData.forEach(k => {
+                const key = k.noKk || k.no_kk || k.idUser;
+                keluargaMap[key] = {
+                    nama: k.namaKepala || k.nama_kepala || k.namaUser || '-',
+                    alamat: k.alamat || '-'
+                };
+            });
+            
+            // Hitung total sampah per jenis
+            let totalOrganik = 0;
+            let totalAnorganik = 0;
+            let totalB3 = 0;
+            let totalSampah = 0;
+            
+            // Hitung per keluarga
+            const perKeluarga = {};
+            
+            sampahData.forEach(s => {
+                const jumlah = s.jumlahMasuk || 0;
+                totalSampah += jumlah;
+                
+                // Tentukan jenis sampah
+                let jenis = '';
+                if (s.jenisSampah && s.jenisSampah.namaJenis) {
+                    jenis = s.jenisSampah.namaJenis.toLowerCase();
+                } else if (s.kategori) {
+                    jenis = s.kategori.toLowerCase();
+                }
+                
+                if (jenis.includes('organik')) {
+                    totalOrganik += jumlah;
+                } else if (jenis.includes('anorganik')) {
+                    totalAnorganik += jumlah;
+                } else if (jenis.includes('b3')) {
+                    totalB3 += jumlah;
+                }
+                
+                // Akumulasi per keluarga
+                const noKk = s.noKk;
+                if (!perKeluarga[noKk]) {
+                    perKeluarga[noKk] = { organik: 0, anorganik: 0, b3: 0, total: 0 };
+                }
+                
+                if (jenis.includes('organik')) perKeluarga[noKk].organik += jumlah;
+                else if (jenis.includes('anorganik')) perKeluarga[noKk].anorganik += jumlah;
+                else if (jenis.includes('b3')) perKeluarga[noKk].b3 += jumlah;
+                
+                perKeluarga[noKk].total += jumlah;
+            });
+            
+            // Update chart sampah per jenis
+            if (chartJenis) chartJenis.destroy();
+            const ctxJenis = document.getElementById('laporan-chart-jenis');
+            if (ctxJenis) {
+                chartJenis = new Chart(ctxJenis, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Sampah Organik', 'Sampah Anorganik', 'Sampah B3'],
+                        datasets: [{
+                            data: [totalOrganik, totalAnorganik, totalB3],
+                            backgroundColor: ['#00a86b', '#3b82f6', '#ef4444'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+            }
+            
+            // Hitung data keuangan
+            const sudahBayar = transaksiData.filter(t => t.status === 'sudah_bayar').length;
+            const belumBayar = transaksiData.filter(t => t.status === 'belum_bayar').length;
+            const totalPendapatan = sudahBayar * 50000;
+            const totalKK = keluargaData.length;
+            
+            document.getElementById('total-pendapatan').innerHTML = `Rp ${totalPendapatan.toLocaleString()}`;
+            document.getElementById('ringkasan-keuangan').innerHTML = `Total KK Aktif: ${totalKK} | Tunggakan: ${belumBayar} KK | Lunas: ${sudahBayar} KK`;
+            document.getElementById('pendapatan-per-bulan').innerHTML = `Rp ${totalPendapatan.toLocaleString()}`;
+            document.getElementById('total-transaksi').innerHTML = transaksiData.length;
+            
+            // Tabel rincian sampah per keluarga
+            const tbody = document.getElementById('rincian-sampah-body');
+            if (Object.keys(perKeluarga).length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">Belum ada data setoran</td></tr>';
+            } else {
+                tbody.innerHTML = Object.keys(perKeluarga).map(noKk => {
+                    const data = perKeluarga[noKk];
+                    const nama = keluargaMap[noKk]?.nama || 'Tidak dikenal';
+                    return `
+                        <tr>
+                            <td>${noKk}</td>
+                            <td>${nama}</td>
+                            <td><strong>${data.total} kg</strong></td>
+                            <td>${data.organik} kg</td>
+                            <td>${data.anorganik} kg</td>
+                            <td>${data.b3} kg</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+            
+            document.getElementById('grand-total-sampah').innerHTML = `${totalSampah} kg`;
+            document.getElementById('grand-total-organik').innerHTML = `${totalOrganik} kg`;
+            document.getElementById('grand-total-anorganik').innerHTML = `${totalAnorganik} kg`;
+            document.getElementById('grand-total-b3').innerHTML = `${totalB3} kg`;
+            
+            // Tabel status iuran
+            const statusBody = document.getElementById('status-iuran-body');
+            if (keluargaData.length === 0) {
+                statusBody.innerHTML = '<tr><td colspan="4" class="text-center">Belum ada data keluarga</td></tr>';
+            } else {
+                statusBody.innerHTML = keluargaData.map(k => {
+                    const noKk = k.noKk || k.no_kk || k.idUser;
+                    const nama = k.namaKepala || k.nama_kepala || k.namaUser || '-';
+                    const transaksiKeluarga = transaksiData.filter(t => t.noKk === noKk);
+                    const latestTransaksi = transaksiKeluarga.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+                    const status = latestTransaksi?.status || 'belum_bayar';
+                    const tglBayar = latestTransaksi?.tanggalBayar ? new Date(latestTransaksi.tanggalBayar).toLocaleDateString('id-ID') : '-';
+                    
+                    const statusBadge = status === 'sudah_bayar' 
+                        ? '<span class="badge badge-success">✅ Lunas</span>' 
+                        : '<span class="badge badge-danger">⚠️ Belum Bayar</span>';
+                    
+                    return `
+                        <tr>
+                            <td>${noKk}</td>
+                            <td>${nama}</td>
+                            <td>${statusBadge}</td>
+                            <td>${tglBayar}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+            
+            // Chart tren bulanan
+            const bulananData = {};
+            sampahData.forEach(s => {
+                if (s.tanggalMasuk) {
+                    const date = new Date(s.tanggalMasuk);
+                    const bulan = `${date.getFullYear()}-${date.getMonth() + 1}`;
+                    const label = date.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+                    const jumlah = s.jumlahMasuk || 0;
+                    
+                    if (!bulananData[label]) bulananData[label] = 0;
+                    bulananData[label] += jumlah;
+                }
+            });
+            
+            const bulanLabels = Object.keys(bulananData).slice(-6);
+            const bulanValues = bulanLabels.map(l => bulananData[l]);
+            
+            if (chartTren) chartTren.destroy();
+            const ctxTren = document.getElementById('chart-tren-bulanan');
+            if (ctxTren) {
+                chartTren = new Chart(ctxTren, {
+                    type: 'line',
+                    data: {
+                        labels: bulanLabels,
+                        datasets: [{
+                            label: 'Total Sampah (kg)',
+                            data: bulanValues,
+                            borderColor: '#00a86b',
+                            backgroundColor: 'rgba(0, 168, 107, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: '#00a86b',
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { position: 'bottom' } },
+                        scales: { y: { beginAtZero: true, title: { display: true, text: 'Berat (kg)' } } }
+                    }
+                });
+            }
+        }
+        
+        // ========== INIT ==========
+        loadLaporan();
+        
+        // Auto refresh setiap 30 detik
+        setInterval(() => {
+            loadLaporan();
+        }, 30000);
+    </script>
 </body>
 </html>

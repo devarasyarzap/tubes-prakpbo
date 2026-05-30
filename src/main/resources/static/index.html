@@ -143,10 +143,24 @@
                     <h3 class="text-2xl font-bold text-gray-900">Selamat Datang Kembali</h3>
                     <p class="text-xs text-gray-500">Masuk untuk mengakses layanan portal Fluxbin Anda</p>
                 </div>
+                
+                <!-- Role Selector -->
+                <div class="flex gap-2 p-1 bg-gray-100 rounded-lg">
+                    <button type="button" onclick="setRole('keluarga')" id="role-keluarga" class="flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all bg-emerald-600 text-white shadow-sm">
+                        👨‍👩‍👧‍👦 Keluarga
+                    </button>
+                    <button type="button" onclick="setRole('pegawai')" id="role-pegawai" class="flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all text-gray-600 hover:bg-gray-200">
+                        👷 Pegawai
+                    </button>
+                    <button type="button" onclick="setRole('admin')" id="role-admin" class="flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all text-gray-600 hover:bg-gray-200">
+                        👑 Admin
+                    </button>
+                </div>
+                
                 <form onsubmit="handleLoginSubmit(event)" class="space-y-4 text-sm">
                     <div>
-                        <label class="block text-gray-700 font-medium mb-1">Email / Username</label>
-                        <input type="text" id="login-identifier" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Masukkan email anda">
+                        <label class="block text-gray-700 font-medium mb-1">Email / Nama Pegawai</label>
+                        <input type="text" id="login-identifier" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Masukkan email atau nama">
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium mb-1">Password</label>
@@ -167,7 +181,7 @@
                 <form onsubmit="handleRegisterSubmit(event)" class="space-y-4 text-sm max-h-[60vh] overflow-y-auto pr-1">
                     <div>
                         <label class="block text-gray-700 font-medium mb-1">Nomor Kartu Keluarga (KK)</label>
-                        <input type="number" id="reg-kk" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Contoh: 3273...">
+                        <input type="text" id="reg-kk" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Contoh: 3273...">
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium mb-1">Nama Kepala Keluarga</label>
@@ -183,9 +197,13 @@
                             <input type="number" id="reg-anggota" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="0">
                         </div>
                         <div>
-                            <label class="block text-gray-700 font-medium mb-1">Email Kontak</label>
-                            <input type="email" id="reg-email" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="warga@mail.com">
+                            <label class="block text-gray-700 font-medium mb-1">No. Telepon</label>
+                            <input type="text" id="reg-telp" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="081234567890">
                         </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Email Kontak</label>
+                        <input type="email" id="reg-email" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="warga@mail.com">
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium mb-1">Password Baru</label>
@@ -207,6 +225,39 @@
         const loginWrapper = document.getElementById('login-form-wrapper');
         const registerWrapper = document.getElementById('register-form-wrapper');
 
+        // ========== ROLE SELECTOR ==========
+        let currentRole = 'keluarga';
+
+        function setRole(role) {
+            currentRole = role;
+            
+            const btnKeluarga = document.getElementById('role-keluarga');
+            const btnPegawai = document.getElementById('role-pegawai');
+            const btnAdmin = document.getElementById('role-admin');
+            const identifierInput = document.getElementById('login-identifier');
+            const labelInput = document.querySelector('#login-form-wrapper label');
+            
+            if (role === 'keluarga') {
+                btnKeluarga.className = 'flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all bg-emerald-600 text-white shadow-sm';
+                btnPegawai.className = 'flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all text-gray-600 hover:bg-gray-200';
+                btnAdmin.className = 'flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all text-gray-600 hover:bg-gray-200';
+                identifierInput.placeholder = 'Masukkan email anda';
+                if(labelInput) labelInput.innerHTML = 'Email';
+            } else if (role === 'pegawai') {
+                btnKeluarga.className = 'flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all text-gray-600 hover:bg-gray-200';
+                btnPegawai.className = 'flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all bg-emerald-600 text-white shadow-sm';
+                btnAdmin.className = 'flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all text-gray-600 hover:bg-gray-200';
+                identifierInput.placeholder = 'Masukkan nama pegawai';
+                if(labelInput) labelInput.innerHTML = 'Nama Pegawai';
+            } else if (role === 'admin') {
+                btnKeluarga.className = 'flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all text-gray-600 hover:bg-gray-200';
+                btnPegawai.className = 'flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all text-gray-600 hover:bg-gray-200';
+                btnAdmin.className = 'flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all bg-emerald-600 text-white shadow-sm';
+                identifierInput.placeholder = 'Masukkan email admin';
+                if(labelInput) labelInput.innerHTML = 'Email Admin';
+            }
+        }
+
         function openModal(type) {
             modal.classList.remove('hidden');
             setTimeout(() => {
@@ -214,6 +265,9 @@
                 content.classList.remove('scale-95');
             }, 10);
             switchForm(type);
+            if (type === 'login') {
+                setRole(currentRole);
+            }
         }
 
         function closeModal() {
@@ -234,49 +288,61 @@
             }
         }
 
+        // ========== LOGIN HANDLER ==========
         async function handleLoginSubmit(event) {
             event.preventDefault();
             
-            const email = document.getElementById('login-identifier').value;
+            const identifier = document.getElementById('login-identifier').value;
             const password = document.getElementById('login-password').value;
+            const selectedRole = currentRole;
             
-            // Tampilkan loading
+            console.log("Login dengan:", { identifier, password, selectedRole });
+            
             const submitBtn = event.target.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerText;
             submitBtn.innerText = 'Memproses...';
             submitBtn.disabled = true;
             
             try {
-                const response = await fetch('http://localhost:8080/api/auth/login', {
+                let url = '';
+                let body = {};
+                
+                if (selectedRole === 'keluarga') {
+                    url = 'http://localhost:8080/api/auth/login';
+                    body = { email: identifier, password: password };
+                } else if (selectedRole === 'pegawai') {
+                    url = 'http://localhost:8080/api/auth/login/pegawai';
+                    body = { nama: identifier, password: password };
+                } else if (selectedRole === 'admin') {
+                    url = 'http://localhost:8080/api/auth/login/admin';
+                    body = { email: identifier, password: password };
+                }
+                
+                console.log("Fetching URL:", url);
+                
+                const response = await fetch(url, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
                 });
                 
                 const result = await response.json();
-                console.log('Login response:', result);
+                console.log('Response:', result);
                 
                 if (result.success) {
-                    // Simpan data user ke localStorage
                     localStorage.setItem('userLoggedIn', JSON.stringify(result.data));
-                    
-                    alert(`Selamat datang, ${result.data.namaKepalaKeluarga || result.data.namaUser}!`);
+                    alert(`Selamat datang, ${result.data.namaPegawai || result.data.namaAdmin || result.data.namaKepalaKeluarga || identifier}!`);
                     closeModal();
                     
-                    // Redirect berdasarkan role
-                    if (result.data.role === 'Keluarga' || result.data.role === 'keluarga') {
+                    if (selectedRole === 'keluarga') {
                         window.location.href = 'keluarga.html';
-                    } else if (result.data.role === 'Admin' || result.data.role === 'admin') {
-                        window.location.href = 'admin.html';
-                    } else if (result.data.role === 'Pegawai' || result.data.role === 'pegawai') {
+                    } else if (selectedRole === 'pegawai') {
                         window.location.href = 'pegawai.html';
-                    } else {
-                        window.location.href = 'dashboard.html';
+                    } else if (selectedRole === 'admin') {
+                        window.location.href = 'admin.html';
                     }
                 } else {
-                    alert('Login gagal: ' + (result.message || 'Email atau password salah!'));
+                    alert('Login gagal: ' + (result.message || 'Periksa kembali data Anda!'));
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -287,18 +353,24 @@
             }
         }
 
+        // ========== REGISTER HANDLER ==========
         async function handleRegisterSubmit(event) {
             event.preventDefault();
             
             const data = {
                 noKK: document.getElementById('reg-kk').value,
                 namaKepalaKeluarga: document.getElementById('reg-nama').value,
-                jumlahAnggota: document.getElementById('reg-anggota').value,
+                jumlahAnggota: parseInt(document.getElementById('reg-anggota').value),
                 alamatDomisili: document.getElementById('reg-alamat').value,
                 emailKontak: document.getElementById('reg-email').value,
                 noTelp: document.getElementById('reg-telp').value,
                 password: document.getElementById('reg-password').value
             };
+            
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Memproses...';
+            submitBtn.disabled = true;
             
             try {
                 const response = await fetch('http://localhost:8080/api/auth/register', {
@@ -315,15 +387,16 @@
                     alert("Registrasi berhasil! Silakan login.");
                     closeModal();
                     switchForm('login');
-                    
-                    // Isi form login dengan email yang baru register
                     document.getElementById('login-identifier').value = data.emailKontak;
                 } else {
                     alert("Registrasi gagal: " + result.message);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert("Gagal terhubung ke server!");
+                alert("Gagal terhubung ke server! Pastikan backend berjalan.");
+            } finally {
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
             }
         }
     </script>

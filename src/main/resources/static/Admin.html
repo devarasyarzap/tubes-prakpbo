@@ -12,6 +12,13 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #334155;
         }
+        .logout-btn {
+            background-color: #ef4444;
+            margin-left: 10px;
+        }
+        .logout-btn:hover {
+            background-color: #dc2626;
+        }
         .navbar-flux {
             background-color: #ffffff;
             border-bottom: 1px solid #e2e8f0;
@@ -75,6 +82,7 @@
             border-radius: 12px;
             transition: all 0.2s;
             font-weight: 500;
+            cursor: pointer;
         }
         .sidebar-nav a:hover {
             background-color: #f1f5f9;
@@ -84,6 +92,14 @@
             background-color: #00a86b10;
             color: #00a86b;
             font-weight: 600;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .icon{
+            font-size: 1.1rem;
         }
         .flux-card {
             background: #ffffff;
@@ -127,10 +143,29 @@
             padding: 8px 16px;
             border-radius: 8px;
             font-size: 0.85rem;
+            cursor: pointer;
         }
         .btn-flux:hover {
             background-color: #008754;
             color: white;
+        }
+        .btn-outline {
+            background-color: #00a86b;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 24px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 168, 107, 0.2);
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .btn-outline:hover {
+            background-color: #008754;
         }
     </style>
 </head>
@@ -145,8 +180,15 @@
             </div>
             <div class="logo-text">FLUX<span class="logo-highlight">BIN</span></div>
         </div>
-        <div>
-            <span class="badge-admin">👑 Admin Sistem</span>
+        <div class="nav-buttons">
+            <span class="badge-admin">
+                <span class="icon">👑</span> 
+                <span id="nama-admin-nav">Admin</span>
+            </span>
+            <button class="btn-outline logout-btn" id="logout-btn" style="color:white; background:#ef4444; border:none;">
+                <span class="icon">🚪</span>
+                Logout
+            </button>
         </div>
     </nav>
 
@@ -156,12 +198,11 @@
             <div class="col-md-3 mb-4">
                 <div class="sidebar">
                     <ul class="sidebar-nav">
-                        <li><a href="#" class="active" onclick="showSection('dashboard')"><span>📊</span> Dashboard</a></li>
-                        <li><a href="#" onclick="showSection('keluarga')"><span>👨‍👩‍👧‍👦</span> Data Keluarga</a></li>
-                        <li><a href="#" onclick="showSection('sampah')"><span>🗑️</span> Data Sampah</a></li>
-                        <li><a href="#" onclick="showSection('transaksi')"><span>💰</span> Transaksi</a></li>
-                        <li><a href="#" onclick="showSection('laporan')"><span>📄</span> Laporan</a></li>
-                        <li><a href="index.html"><span>🚪</span> Logout</a></li>
+                        <li><a href="#" onclick="showSection('dashboard')" class="active">📊 Dashboard</a></li>
+                        <li><a href="#" onclick="showSection('keluarga')">👨‍👩‍👧‍👦 Data Keluarga</a></li>
+                        <li><a href="#" onclick="showSection('sampah')">🗑️ Data Sampah</a></li>
+                        <li><a href="#" onclick="goToTransaksi()">💰 Transaksi</a></li>
+                        <li><a href="#" onclick="goToLaporan()">📄 Laporan</a></li>
                     </ul>
                 </div>
             </div>
@@ -234,12 +275,12 @@
                     <div class="flux-card">
                         <h5 class="font-weight-bold mb-3">🔄 Transaksi Terbaru</h5>
                         <div class="table-responsive">
-                            <table class="table table-flux m-0">
+                            <table class="table table-flux">
                                 <thead>
                                     <tr><th>No Transaksi</th><th>No KK</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr>
                                 </thead>
                                 <tbody id="recent-transaksi">
-                                    <td><td colspan="5" class="text-center">Memuat data...</td></tr>
+                                    <tr><td colspan="5" class="text-center">Memuat data...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -272,32 +313,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div id="transaksi-section" style="display: none;">
-                    <div class="flux-card">
-                        <h5 class="font-weight-bold mb-3">💰 Data Transaksi Iuran</h5>
-                        <div class="table-responsive">
-                            <table class="table table-flux">
-                                <thead><tr><th>No Transaksi</th><th>No KK</th><th>Status</th><th>Tanggal Bayar</th></tr></thead>
-                                <tbody id="data-transaksi-admin"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="laporan-section" style="display: none;">
-                    <div class="flux-card">
-                        <h5 class="font-weight-bold mb-3">📄 Laporan Sistem</h5>
-                        <div class="row mb-3">
-                            <div class="col-md-4"><input type="date" id="startDate" class="form-control"></div>
-                            <div class="col-md-4"><input type="date" id="endDate" class="form-control"></div>
-                            <div class="col-md-4"><button class="btn-flux" onclick="filterLaporan()">Filter</button></div>
-                        </div>
-                        <div id="laporan-content">
-                            <p class="text-muted">Pilih rentang tanggal untuk melihat laporan.</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -327,6 +342,7 @@
         const API = 'http://localhost:8080/api';
         let sampahChart, trenChart;
 
+        // ========== NAVIGASI ==========
         function showSection(section) {
             document.querySelectorAll('[id$="-section"]').forEach(el => el.style.display = 'none');
             document.getElementById(`${section}-section`).style.display = 'block';
@@ -336,9 +352,19 @@
             if (section === 'dashboard') loadDashboard();
             else if (section === 'keluarga') loadKeluarga();
             else if (section === 'sampah') loadSampah();
-            else if (section === 'transaksi') loadTransaksiAdmin();
+        }
+        
+        // Navigasi ke halaman Transaksi
+        function goToTransaksi() {
+            window.location.href = 'Transaksi.html';
+        }
+        
+        // Navigasi ke halaman Laporan Admin
+        function goToLaporan() {
+            window.location.href = 'LaporanAdmin.html';
         }
 
+        // ========== LOAD DASHBOARD ==========
         async function loadDashboard() {
             try {
                 const keluarga = await fetch(`${API}/keluarga`).then(res => res.json());
@@ -359,36 +385,102 @@
 
                 if (sampahChart) sampahChart.destroy();
                 sampahChart = new Chart(document.getElementById('chartSampahPerJenis'), {
-                    type: 'doughnut', data: { labels: ['Organik', 'Anorganik', 'B3'], datasets: [{ data: [organik, anorganik, b3], backgroundColor: ['#00a86b', '#3b82f6', '#ef4444'] }] }
+                    type: 'doughnut', 
+                    data: { 
+                        labels: ['Organik', 'Anorganik', 'B3'], 
+                        datasets: [{ 
+                            data: [organik, anorganik, b3], 
+                            backgroundColor: ['#00a86b', '#3b82f6', '#ef4444'] 
+                        }] 
+                    }
                 });
 
                 // Recent transaksi
                 const tbody = document.getElementById('recent-transaksi');
-                tbody.innerHTML = transaksi.slice(0, 5).map(t => `<tr><td>${t.noTransaksi}</td><td>${t.noKk}</td><td>${t.status === 'sudah_bayar' ? '<span class="text-success">Lunas</span>' : '<span class="text-warning">Belum Bayar</span>'}</td><td>${t.tanggalBayar ? new Date(t.tanggalBayar).toLocaleDateString() : '-'}</td><td><button class="btn-flux btn-sm" onclick="updateStatus('${t.noTransaksi}')">Update</button></td></tr>`).join('');
+                if (tbody) {
+                    tbody.innerHTML = transaksi.slice(0, 5).map(t => `
+                        <tr>
+                            <td>${t.noTransaksi}</td>
+                            <td>${t.noKk}</td>
+                            <td>${t.status === 'sudah_bayar' ? '<span class="text-success">✅ Lunas</span>' : '<span class="text-warning">⏳ Belum Bayar</span>'}</td>
+                            <td>${t.tanggalBayar ? new Date(t.tanggalBayar).toLocaleDateString() : '-'}</td>
+                            <td><button class="btn-flux btn-sm" onclick="updateStatus('${t.noTransaksi}')">Update</button></td>
+                        </tr>
+                    `).join('');
+                }
+            } catch(e) { 
+                console.error('Error loadDashboard:', e); 
+            }
+        }
+
+        // ========== LOAD KELUARGA ==========
+        async function loadKeluarga() {
+            try {
+                const res = await fetch(`${API}/keluarga`).then(res => res.json());
+                document.getElementById('data-keluarga').innerHTML = res.map(k => `
+                    <tr>
+                        <td>${k.noKk || k.idUser}</td>
+                        <td>${k.namaUser || k.namaKepala}</td>
+                        <td>${k.alamat}</td>
+                        <td>${k.noTelp}</td>
+                        <td><button class="btn-flux btn-sm" onclick="hapusKeluarga('${k.noKk || k.idUser}')">Hapus</button></td>
+                    </tr>
+                `).join('');
             } catch(e) { console.error(e); }
         }
 
-        async function loadKeluarga() {
-            const res = await fetch(`${API}/keluarga`).then(res => res.json());
-            document.getElementById('data-keluarga').innerHTML = res.map(k => `<tr><td>${k.noKk || k.idUser}</td><td>${k.namaUser || k.namaKepala}</td><td>${k.alamat}</td><td>${k.noTelp}</td><td><button class="btn-flux btn-sm" onclick="hapusKeluarga('${k.noKk || k.idUser}')">Hapus</button></td></tr>`).join('');
-        }
-
+        // ========== LOAD SAMPAH ==========
         async function loadSampah() {
-            const res = await fetch(`${API}/sampah-masuk`).then(res => res.json());
-            document.getElementById('data-sampah').innerHTML = res.map(s => `<tr><td>${s.noSampah}</td><td>${s.noKk}</td><td>${s.jenisSampah?.namaJenis || '-'}</td><td>${s.jumlahMasuk}</td><td>${new Date(s.tanggalMasuk).toLocaleDateString()}</td></tr>`).join('');
+            try {
+                const res = await fetch(`${API}/sampah-masuk`).then(res => res.json());
+                document.getElementById('data-sampah').innerHTML = res.map(s => `
+                    <tr>
+                        <td>${s.noSampah}</td>
+                        <td>${s.noKk}</td>
+                        <td>${s.jenisSampah?.namaJenis || '-'}</td>
+                        <td>${s.jumlahMasuk}</td>
+                        <td>${new Date(s.tanggalMasuk).toLocaleDateString()}</td>
+                    </tr>
+                `).join('');
+            } catch(e) { console.error(e); }
         }
 
-        async function loadTransaksiAdmin() {
-            const res = await fetch(`${API}/transaksi`).then(res => res.json());
-            document.getElementById('data-transaksi-admin').innerHTML = res.map(t => `<tr><td>${t.noTransaksi}</td><td>${t.noKk}</td><td>${t.status === 'sudah_bayar' ? '<span class="text-success">✅ Lunas</span>' : '<span class="text-warning">⏳ Belum Bayar</span>'}</td><td>${t.tanggalBayar ? new Date(t.tanggalBayar).toLocaleDateString() : '-'}</td></tr>`).join('');
+        // ========== CRUD KELUARGA ==========
+        function showTambahKeluarga() { 
+            $('#modalKeluarga').modal('show'); 
+        }
+        
+        async function simpanKeluarga() { 
+            alert('Fungsi simpan terhubung ke backend'); 
+            $('#modalKeluarga').modal('hide'); 
+            loadKeluarga(); 
+        }
+        
+        async function hapusKeluarga(id) { 
+            if(confirm('Hapus keluarga?')) { 
+                alert('Hapus: '+id); 
+                loadKeluarga(); 
+            } 
+        }
+        
+        async function updateStatus(id) { 
+            alert('Update status: '+id); 
+            loadDashboard(); 
         }
 
-        function showTambahKeluarga() { $('#modalKeluarga').modal('show'); }
-        async function simpanKeluarga() { alert('Fungsi simpan terhubung ke backend'); $('#modalKeluarga').modal('hide'); loadKeluarga(); }
-        async function hapusKeluarga(id) { if(confirm('Hapus keluarga?')) { alert('Hapus: '+id); loadKeluarga(); } }
-        async function updateStatus(id) { alert('Update status: '+id); loadDashboard(); }
-        function filterLaporan() { alert('Filter laporan dari ' + document.getElementById('startDate').value + ' s/d ' + document.getElementById('endDate').value); }
+        // ========== LOGOUT ==========
+        document.getElementById('logout-btn')?.addEventListener('click', () => {
+            localStorage.removeItem('userLoggedIn');
+            window.location.href = 'index.html';
+        });
 
+        // ========== AMBIL NAMA ADMIN ==========
+        const dataUser = JSON.parse(localStorage.getItem('userLoggedIn'));
+        if (dataUser && dataUser.namaAdmin) {
+            document.getElementById('nama-admin-nav').innerText = dataUser.namaAdmin;
+        }
+
+        // Load dashboard default
         loadDashboard();
     </script>
 </body>

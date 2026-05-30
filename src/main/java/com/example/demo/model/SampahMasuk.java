@@ -1,10 +1,8 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "sampah_masuk")
 public class SampahMasuk {
@@ -17,6 +15,9 @@ public class SampahMasuk {
     @JoinColumn(name = "kategori", referencedColumnName = "idJenis")
     private JenisSampah jenisSampah;
     
+    @Transient  // Tidak disimpan ke database, hanya untuk menerima input dari frontend
+    private Integer jenisSampahId;
+    
     private Integer jumlahMasuk;
     
     @Column(name = "no_kk")
@@ -25,12 +26,25 @@ public class SampahMasuk {
     @Column(name = "tanggal_masuk")
     private LocalDateTime tanggalMasuk;
     
-    // Getter dan Setter manual (karena Lombok mungkin bermasalah)
+    // Setter untuk jenisSampahId - otomatis mengisi jenisSampah
+    public void setJenisSampahId(Integer id) {
+        this.jenisSampahId = id;
+        if (id != null) {
+            this.jenisSampah = new JenisSampah() {
+                // Anonymous class - atau bisa pakai repository untuk mengambil dari DB
+            };
+            this.jenisSampah.setIdJenis(id);
+        }
+    }
+    
+    // Getter/Setter lainnya...
     public Integer getNoSampah() { return noSampah; }
     public void setNoSampah(Integer noSampah) { this.noSampah = noSampah; }
     
     public JenisSampah getJenisSampah() { return jenisSampah; }
     public void setJenisSampah(JenisSampah jenisSampah) { this.jenisSampah = jenisSampah; }
+    
+    public Integer getJenisSampahId() { return jenisSampahId; }
     
     public Integer getJumlahMasuk() { return jumlahMasuk; }
     public void setJumlahMasuk(Integer jumlahMasuk) { this.jumlahMasuk = jumlahMasuk; }
