@@ -358,13 +358,14 @@
             event.preventDefault();
             
             const data = {
-                noKK: document.getElementById('reg-kk').value,
-                namaKepalaKeluarga: document.getElementById('reg-nama').value,
-                jumlahAnggota: parseInt(document.getElementById('reg-anggota').value),
-                alamatDomisili: document.getElementById('reg-alamat').value,
-                emailKontak: document.getElementById('reg-email').value,
-                noTelp: document.getElementById('reg-telp').value,
-                password: document.getElementById('reg-password').value
+                "noKk": document.getElementById("noKk").value, // HARUS noKk, bukan no_kk
+                "namaKepala": document.getElementById("namaKepala").value, // HARUS namaKepala
+                "jumlahAnggota": parseInt(document.getElementById("jumlahAnggota").value), // HARUS jumlahAnggota
+                "alamat": document.getElementById("alamat").value,
+                "noTelp": document.getElementById("noTelp").value, // HARUS noTelp
+                "email": document.getElementById("email").value,
+                "password": document.getElementById("password").value,
+                "role": "KELUARGA"
             };
             
             const submitBtn = event.target.querySelector('button[type="submit"]');
@@ -387,7 +388,7 @@
                     alert("Registrasi berhasil! Silakan login.");
                     closeModal();
                     switchForm('login');
-                    document.getElementById('login-identifier').value = data.emailKontak;
+                    document.getElementById('login-identifier').value = data.email;
                 } else {
                     alert("Registrasi gagal: " + result.message);
                 }
