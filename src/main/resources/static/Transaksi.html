@@ -256,7 +256,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        const API_BASE = 'http://localhost:8081/api';
+        const API_BASE = 'tubes-prakpbo-production.up.railway.app/api';
         
         // Ambil data user dari localStorage
         const dataUser = JSON.parse(localStorage.getItem('userLoggedIn'));
@@ -393,7 +393,7 @@
             
             try {
                 // ENDPOINT YANG BENAR: /api/transaksi/bayar/{noTransaksi}
-                const response = await fetch(`http://localhost:8081/api/transaksi/bayar/${noTransaksi}`, {
+                const response = await fetch(`tubes-prakpbo-production.up.railway.app/api/transaksi/bayar/${noTransaksi}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' }
                 });
