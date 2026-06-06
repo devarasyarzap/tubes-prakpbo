@@ -191,7 +191,7 @@
     </div>
 
     <script>
-        const API_BASE = 'tubes-prakpbo-production.up.railway.app/api';
+        const API_BASE = 'https://tubes-prakpbo-production.up.railway.app/api';
         
         // Ambil data user dari localStorage
         const dataUser = JSON.parse(localStorage.getItem('userLoggedIn'));
@@ -214,7 +214,7 @@
             selectElement.innerHTML = '<option value="">⏳ Memuat data keluarga...</option>';
             
             try {
-                const response = await fetch('tubes-prakpbo-production.up.railway.app/api/keluarga');
+                const response = await fetch('https://tubes-prakpbo-production.up.railway.app/api/keluarga');
                 
                 console.log('Response status:', response.status); // Debug: lihat status
                 
@@ -247,7 +247,7 @@
             } catch (error) {
                 console.error('Error detail:', error);
                 selectElement.innerHTML = '<option value="">❌ Gagal memuat data keluarga</option>';
-                alert('Gagal memuat data keluarga. Pastikan backend berjalan di tubes-prakpbo-production.up.railway.app\n\nError: ' + error.message);
+                alert('Gagal memuat data keluarga. Pastikan backend berjalan di https://tubes-prakpbo-production.up.railway.app\n\nError: ' + error.message);
             }
         }
         
