@@ -560,32 +560,44 @@
         }
         
         // ====================================================================
-        // FUNCTION: AMBIL DATA TRANSAKSI (untuk status iuran)
+        // FUNCTION: AMBIL DATA TRANSAKSI (Untuk Status Iuran Dinamis)
         // ====================================================================
         async function loadTransaksiData(noKK) {
+            const statusIuran = document.getElementById('status-iuran');
+            
             try {
                 const response = await fetch(`${API_BASE}/transaksi/keluarga/${noKK}`);
                 
                 if (!response.ok) {
+                    statusIuran.innerHTML = '<div class="badge-lunas" style="background:#64748b;">Data Belum Tersedia</div>';
                     return { success: false };
                 }
                 
                 const transaksiData = await response.json();
                 
-                // Cek apakah ada transaksi yang belum bayar
-                const hasTunggakan = transaksiData.some(t => t.status === 'belum_bayar');
+                if (!transaksiData || transaksiData.length === 0) {
+                    statusIuran.innerHTML = '<div class="badge-lunas" style="background:#64748b;">Belum Ada Tagihan</div>';
+                    return { success: true };
+                }
                 
-                const statusIuran = document.getElementById('status-iuran');
+                // Cari apakah ada data dengan status belum bayar/tunggakan dari Admin
+                const hasTunggakan = transaksiData.some(t => {
+                    // Sesuaikan 'status' dengan nama kolom di Java (misal: t.statusIuran, t.statusPembayaran)
+                    const statusText = String(t.status || t.statusIuran || t.statusPembayaran).toLowerCase();
+                    return statusText.includes('belum') || statusText.includes('tunggakan') || statusText === 'false';
+                });
+                
                 if (!hasTunggakan) {
-                    statusIuran.innerHTML = '<div class="badge-lunas">✓ LUNAS (Bulan Ini)</div>';
+                    statusIuran.innerHTML = '<div class="badge-lunas">✓ LUNAS</div>';
                 } else {
-                    statusIuran.innerHTML = '<div class="badge-tunggakan">⚠️ TUNGGKAN</div>';
+                    statusIuran.innerHTML = '<div class="badge-tunggakan">⚠️ TUNGGAKAN</div>';
                 }
                 
                 return { success: true, hasTunggakan };
                 
             } catch (error) {
                 console.error('Error loading transaksi data:', error);
+                statusIuran.innerHTML = '<div class="badge-tunggakan" style="background:#94a3b8;">Gagal Memuat</div>';
                 return { success: false };
             }
         }
@@ -600,61 +612,83 @@
         }
         
         // ====================================================================
-        // FUNCTION: RENDER GRAFIK
+        // FUNCTION: RENDER GRAFIK DINAMIS (Berdasarkan Data Keluarga Login)
         // ====================================================================
         let chartInstance = null;
         
         function renderChart(sampahData) {
             const ctx = document.getElementById('fluxMainTrashChart').getContext('2d');
             
-            // Jika sudah ada chart, destroy dulu
             if (chartInstance) {
                 chartInstance.destroy();
             }
+
+            // 1. Siapkan array untuk 6 bulan terakhir
+            const labels = [];
+            const dataOrganik = [0, 0, 0, 0, 0, 0];
+            const dataAnorganik = [0, 0, 0, 0, 0, 0];
+            const dataB3 = [0, 0, 0, 0, 0, 0];
+
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date();
+                d.setMonth(d.getMonth() - i);
+                // Format: "Jan 26", "Feb 26", dll
+                const monthName = d.toLocaleString('id-ID', { month: 'short' }) + ' ' + d.getFullYear().toString().substr(-2);
+                labels.push(monthName);
+            }
+
+            // 2. Olah data sampah asli dari API
+            if (sampahData && sampahData.length > 0) {
+                sampahData.forEach(s => {
+                    // Sesuaikan 'tanggal' dengan nama variabel tanggal di Spring Boot-mu
+                    // (misal: s.tanggal, s.tanggalSetor, atau s.tanggalMasuk)
+                    const dateStr = s.tanggal || s.tanggalSetor || s.tanggalMasuk; 
+                    
+                    if (dateStr) {
+                        const dateObj = new Date(dateStr);
+                        const monthName = dateObj.toLocaleString('id-ID', { month: 'short' }) + ' ' + dateObj.getFullYear().toString().substr(-2);
+                        
+                        // Cari apakah bulan transaksi masuk dalam 6 bulan terakhir
+                        const index = labels.indexOf(monthName);
+                        if (index !== -1) {
+                            const jenis = (s.jenisSampah?.namaJenis || s.kategori || '').toLowerCase();
+                            const jumlah = s.jumlahMasuk || 0;
+
+                            if (jenis.includes('organik') && !jenis.includes('anorganik')) {
+                                dataOrganik[index] += jumlah;
+                            } else if (jenis.includes('anorganik')) {
+                                dataAnorganik[index] += jumlah;
+                            } else if (jenis.includes('b3')) {
+                                dataB3[index] += jumlah;
+                            } else {
+                                // Fallback jika pakai ID Jenis
+                                if (s.jenisSampah?.idJenis === 1) dataOrganik[index] += jumlah;
+                                else if (s.jenisSampah?.idJenis === 2) dataAnorganik[index] += jumlah;
+                                else if (s.jenisSampah?.idJenis === 3) dataB3[index] += jumlah;
+                            }
+                        }
+                    }
+                });
+            }
             
-            // Data untuk grafik (bisa dari data real atau simulasi)
-            // Untuk grafik bulanan, kita bisa hitung dari data real
-            // Tapi untuk sementara pakai data simulasi yang menarik
-            
+            // 3. Masukkan data hasil hitungan ke Chart.js
             chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Des 25', 'Jan 26', 'Feb 26', 'Mar 26', 'Apr 26', 'Mei 26'],
+                    labels: labels,
                     datasets: [
-                        {
-                            label: 'Organik (kg)',
-                            data: [15, 14, 16, 18, 20, 15],
-                            backgroundColor: '#00a86b',
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Anorganik (kg)',
-                            data: [7, 9, 12, 13, 14, 20],
-                            backgroundColor: '#3b82f6',
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'B3 (kg)',
-                            data: [2, 3, 3, 4, 3, 5],
-                            backgroundColor: '#ea580c',
-                            borderRadius: 4
-                        }
+                        { label: 'Organik (kg)', data: dataOrganik, backgroundColor: '#00a86b', borderRadius: 4 },
+                        { label: 'Anorganik (kg)', data: dataAnorganik, backgroundColor: '#3b82f6', borderRadius: 4 },
+                        { label: 'B3 (kg)', data: dataB3, backgroundColor: '#ea580c', borderRadius: 4 }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    },
+                    plugins: { legend: { position: 'bottom' } },
                     scales: {
                         x: { grid: { display: false } },
-                        y: { 
-                            beginAtZero: true, 
-                            title: { display: true, text: 'Berat (kg)' } 
-                        }
+                        y: { beginAtZero: true, title: { display: true, text: 'Berat (kg)' } }
                     }
                 }
             });
