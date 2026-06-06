@@ -1,16 +1,22 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.StatusTransaksi;
-import com.example.demo.model.TransaksiSampah;
-import com.example.demo.repository.TransaksiRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.model.StatusTransaksi;
+import com.example.demo.model.TransaksiSampah;
+import com.example.demo.repository.TransaksiRepository;
 
 @RestController
 @RequestMapping("/api/transaksi")
@@ -26,11 +32,12 @@ public class TransaksiController {
         return transaksiRepository.findAll();
     }
 
-    @PostMapping("/bayar/{noTransaksi}")
-    public Map<String, Object> bayar(@PathVariable String noTransaksi) {
+    // ========== KONFIRMASI BAYAR ==========
+    // Menggunakan @RequestParam agar aman dari garis miring di ID Transaksi
+    @PostMapping("/bayar")
+    public Map<String, Object> bayar(@RequestParam("noTransaksi") String noTransaksi) {
         Map<String, Object> response = new HashMap<>();
-        
-        System.out.println(">>> POST /api/transaksi/bayar/" + noTransaksi + " dipanggil");
+        System.out.println(">>> POST /api/transaksi/bayar dipanggil untuk TRX: " + noTransaksi);
         
         Optional<TransaksiSampah> transaksiOpt = transaksiRepository.findById(noTransaksi);
         
@@ -54,6 +61,31 @@ public class TransaksiController {
         
         response.put("success", true);
         response.put("message", "Pembayaran berhasil dikonfirmasi!");
+        return response;
+    }
+
+    // ========== HENTIKAN TRANSAKSI ==========
+    @PostMapping("/henti")
+    public Map<String, Object> henti(@RequestParam("noTransaksi") String noTransaksi) {
+        Map<String, Object> response = new HashMap<>();
+        System.out.println(">>> POST /api/transaksi/henti dipanggil untuk TRX: " + noTransaksi);
+        
+        Optional<TransaksiSampah> transaksiOpt = transaksiRepository.findById(noTransaksi);
+        
+        if (transaksiOpt.isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Transaksi tidak ditemukan!");
+            return response;
+        }
+        
+        TransaksiSampah transaksi = transaksiOpt.get();
+        
+        // Asumsi kamu punya enum diberhentikan. Kalau beda, sesuaikan namanya ya!
+        transaksi.setStatus(StatusTransaksi.diberhentikan); 
+        transaksiRepository.save(transaksi);
+        
+        response.put("success", true);
+        response.put("message", "Transaksi berhasil diberhentikan!");
         return response;
     }
 }

@@ -384,26 +384,35 @@
         
         // ========== UPDATE STATUS TRANSAKSI ==========
         async function updateStatus(noTransaksi, statusBaru) {
-            if (statusBaru !== 'sudah_bayar') {
-                alert('Untuk saat ini hanya bisa konfirmasi pembayaran');
-                return;
-            }
             
-            if (!confirm(`Konfirmasi pembayaran untuk transaksi ${noTransaksi}?`)) return;
+            // 1. Kita buat pesan konfirmasi dinamis
+            let pesan = statusBaru === 'sudah_bayar' ? 
+                `Konfirmasi pembayaran untuk transaksi ${noTransaksi}?` : 
+                `Yakin ingin memberhentikan transaksi ${noTransaksi}?`;
+                
+            if (!confirm(pesan)) return;
             
             try {
-                // ENDPOINT YANG BENAR: /api/transaksi/bayar/{noTransaksi}
-                const response = await fetch(`https://tubes-prakpbo-production.up.railway.app/api/transaksi/bayar/${noTransaksi}`, {
-                    method: 'POST',
+                // 2. ENCODE ID TRANSAKSI
+                // Ini mengubah tanda "/" menjadi "%2F" agar tidak merusak format URL
+                const idAman = encodeURIComponent(noTransaksi);
+                
+                // 3. TENTUKAN ENDPOINT
+                // Pastikan endpoint '/henti' ini sudah kamu buat di Controller Java kamu ya!
+                let endpoint = statusBaru === 'sudah_bayar' ? 
+                               `/api/transaksi/bayar?noTransaksi=${idAman}` : 
+                               `/api/transaksi/henti?noTransaksi=${idAman}`;
+                
+                const response = await fetch(`https://tubes-prakpbo-production.up.railway.app${endpoint}`, {
+                    method: 'POST', // atau PUT, sesuaikan dengan backend kamu
                     headers: { 'Content-Type': 'application/json' }
                 });
                 
                 const result = await response.json();
-                console.log('Response:', result);
                 
                 if (result.success) {
-                    alert(`✅ Pembayaran berhasil dikonfirmasi!`);
-                    loadTransaksi();
+                    alert(statusBaru === 'sudah_bayar' ? '✅ Pembayaran berhasil dikonfirmasi!' : '⛔ Transaksi diberhentikan!');
+                    loadTransaksi(); // Refresh tabel
                 } else {
                     alert('❌ Gagal: ' + (result.message || 'Unknown error'));
                 }
