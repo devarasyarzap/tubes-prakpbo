@@ -36,23 +36,117 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const user = JSON.parse(localStorage.getItem('userLoggedIn')) || { noKK: '3273000000000000', namaKepalaKeluarga: 'Keluarga Contoh' };
-        document.getElementById('info-keluarga').innerText = `Keluarga: ${user.namaKepalaKeluarga} (No. KK: ${user.noKK})`;
-        
-        // Data simulasi (nanti ganti dengan fetch dari API)
-        const dataSetoran = [
-            { tgl: '2026-05-01', jenis: 'Organik', jumlah: 5.2, status: 'Terverifikasi' },
-            { tgl: '2026-05-08', jenis: 'Anorganik', jumlah: 3.5, status: 'Terverifikasi' },
-            { tgl: '2026-05-15', jenis: 'Organik', jumlah: 4.8, status: 'Terverifikasi' },
-            { tgl: '2026-05-22', jenis: 'B3', jumlah: 1.2, status: 'Menunggu' }
-        ];
-        
-        document.getElementById('history-table').innerHTML = dataSetoran.map(s => `<tr><td>${s.tgl}</td><td>${s.jenis}</td><td>${s.jumlah} kg</td><td>${s.status === 'Terverifikasi' ? '<span class="text-success">✓ Terverifikasi</span>' : '<span class="text-warning">⏳ Menunggu</span>'}</td></tr>`).join('');
-        
-        new Chart(document.getElementById('history-chart'), {
-            type: 'bar', data: { labels: dataSetoran.map(s => s.tgl), datasets: [{ label: 'Berat Sampah (kg)', data: dataSetoran.map(s => s.jumlah), backgroundColor: '#00a86b', borderRadius: 4 }] },
-            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } }
-        });
+        // ====================================================================
+        // 1. CEK AUTENTIKASI (PROTEKSI HALAMAN)
+        // ====================================================================
+        let dataUser = null;
+        try {
+            dataUser = JSON.parse(localStorage.getItem('userLoggedIn'));
+        } catch(e) {
+            console.error('Error parsing user data:', e);
+        }
+
+        // Jika belum login atau bukan keluarga, tendang ke halaman login
+        if (!dataUser || dataUser.role.toUpperCase() !== 'KELUARGA') {
+            alert('Halaman ini hanya untuk Keluarga yang sudah login!');
+            window.location.href = '/index.html';
+        }
+
+        // Ambil No KK dan Nama untuk header
+        const noKK = dataUser.noKK || dataUser.noKk;
+        const namaKeluarga = dataUser.namaKepalaKeluarga || dataUser.namaKepala || dataUser.nama || "Keluarga";
+        document.getElementById('info-keluarga').innerText = `Keluarga: ${namaKeluarga} (No. KK: ${noKK})`;
+
+        // ====================================================================
+        // 2. AMBIL DATA RIWAYAT DARI DATABASE (API)
+        // ====================================================================
+        const API_BASE = 'https://tubes-prakpbo-production.up.railway.app/api';
+
+        async function loadHistory() {
+            const tableBody = document.getElementById('history-table');
+            tableBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">⏳ Sedang memuat riwayat...</td></tr>';
+
+            try {
+                const response = await fetch(`${API_BASE}/sampah-masuk/keluarga/${noKK}`);
+                
+                if (!response.ok) {
+                    throw new Error('Gagal mengambil data riwayat');
+                }
+
+                const dataSetoran = await response.json();
+
+                // Jika data kosong
+                if (!dataSetoran || dataSetoran.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" class="text-center font-weight-bold text-muted">Belum ada riwayat setoran sampah.</td></tr>';
+                    return;
+                }
+
+                // ====================================================================
+                // 3. RENDER TABEL
+                // ====================================================================
+                tableBody.innerHTML = dataSetoran.map(s => {
+                    // Sesuaikan nama field dengan model Java kamu
+                    const tgl = s.tanggal || s.tanggalSetor || s.tanggalMasuk || '-';
+                    const jenis = s.jenisSampah?.namaJenis || s.kategori || '-';
+                    const jumlah = s.jumlahMasuk || s.berat || 0;
+                    
+                    // Simulasi status (bisa disesuaikan jika di database ada kolom status validasi)
+                    const statusVal = s.status || 'Terverifikasi';
+                    const badge = statusVal.toLowerCase().includes('tunggu') 
+                        ? '<span class="text-warning font-weight-bold">⏳ Menunggu</span>' 
+                        : '<span class="text-success font-weight-bold">✓ Terverifikasi</span>';
+
+                    return `
+                        <tr>
+                            <td>${tgl}</td>
+                            <td><span class="badge badge-light border px-2 py-1">${jenis}</span></td>
+                            <td class="font-weight-bold text-secondary">${jumlah} kg</td>
+                            <td>${badge}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                // ====================================================================
+                // 4. RENDER GRAFIK RIWAYAT (Hanya 10 Setoran Terakhir agar tidak penuh)
+                // ====================================================================
+                // Ambil 10 data terakhir untuk grafik
+                const dataGrafik = dataSetoran.slice(-10);
+                
+                const labels = dataGrafik.map(s => s.tanggal || s.tanggalSetor || s.tanggalMasuk || '?');
+                const amounts = dataGrafik.map(s => s.jumlahMasuk || s.berat || 0);
+
+                new Chart(document.getElementById('history-chart'), {
+                    type: 'line', // Diubah jadi line chart agar lebih pas untuk tren waktu
+                    data: { 
+                        labels: labels, 
+                        datasets: [{ 
+                            label: 'Tren Berat Setoran (kg)', 
+                            data: amounts, 
+                            borderColor: '#00a86b',
+                            backgroundColor: 'rgba(0, 168, 107, 0.1)',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#00a86b',
+                            pointRadius: 4,
+                            fill: true,
+                            tension: 0.3 // Bikin garisnya melengkung halus
+                        }] 
+                    },
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, // Ubah ke false agar bisa menyesuaikan tinggi container
+                        plugins: { legend: { position: 'bottom' } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error fetching history:', error);
+                tableBody.innerHTML = '<tr><td colspan="4" class="text-center text-danger font-weight-bold">❌ Gagal terhubung ke server. Pastikan backend menyala.</td></tr>';
+            }
+        }
+
+        // Jalankan fungsi saat halaman selesai dimuat
+        loadHistory();
     </script>
 </body>
 </html>
