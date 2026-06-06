@@ -436,11 +436,59 @@
                 document.getElementById('total-setoran').innerHTML = sampahData.length + ' <span class="small">kali</span>';
                 document.getElementById('total-keluarga').innerHTML = keluargaData.length + ' <span class="small">KK</span>';
                 
-                // Chart Jenis
+                // ========== UPDATE: Chart Jenis Dinamis ==========
+                const labelsJenis = [];
+                const dataJenis = [];
+                const warnaJenis = [];
+
+                // Masukkan ke grafik HANYA jika beratnya lebih dari 0
+                if (totalOrganik > 0) {
+                    labelsJenis.push('Organik');
+                    dataJenis.push(totalOrganik);
+                    warnaJenis.push('#00a86b'); // Hijau
+                }
+                if (totalAnorganik > 0) {
+                    labelsJenis.push('Anorganik');
+                    dataJenis.push(totalAnorganik);
+                    warnaJenis.push('#3b82f6'); // Biru
+                }
+                if (totalB3 > 0) {
+                    labelsJenis.push('B3');
+                    dataJenis.push(totalB3);
+                    warnaJenis.push('#ea580c'); // Oranye
+                }
+
+                // Jika database masih kosong (belum ada sampah sama sekali)
+                if (dataJenis.length === 0) {
+                    labelsJenis.push('Belum ada data');
+                    dataJenis.push(1); // Angka 1 sekadar agar lingkaran abu-abunya terbentuk
+                    warnaJenis.push('#e2e8f0'); // Abu-abu
+                }
+
                 if (chartJenis) chartJenis.destroy();
                 chartJenis = new Chart(document.getElementById('chartJenis'), {
                     type: 'doughnut',
-                    data: { labels: ['Organik', 'Anorganik', 'B3'], datasets: [{ data: [totalOrganik, totalAnorganik, totalB3], backgroundColor: ['#00a86b', '#3b82f6', '#ea580c'] }] }
+                    data: { 
+                        labels: labelsJenis, 
+                        datasets: [{ 
+                            data: dataJenis, 
+                            backgroundColor: warnaJenis,
+                            borderWidth: 1
+                        }] 
+                    },
+                    options: {
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    // Matikan tooltip jika data masih kosong
+                                    label: function(context) {
+                                        if (context.label === 'Belum ada data') return ' 0 kg';
+                                        return ' ' + context.raw + ' kg';
+                                    }
+                                }
+                            }
+                        }
+                    }
                 });
                 
                 // Chart Bulan
