@@ -357,7 +357,7 @@
         async function handleRegisterSubmit(event) {
             event.preventDefault();
             
-            const data = {
+            const dataRegister = {
                 "noKk": document.getElementById("noKk").value, // HARUS noKk, bukan no_kk
                 "namaKepala": document.getElementById("namaKepala").value, // HARUS namaKepala
                 "jumlahAnggota": parseInt(document.getElementById("jumlahAnggota").value), // HARUS jumlahAnggota
@@ -379,7 +379,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(dataRegister)
                 });
                 
                 const result = await response.json();
