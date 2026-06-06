@@ -33,6 +33,28 @@ public class AuthController {
     @Autowired
     private AdminRepository adminRepository;
 
+    // ========== REGISTER KELUARGA ==========
+    @PostMapping("/register")
+    public ResponseEntity<?> registerKeluarga(@RequestBody Keluarga keluarga) {
+        System.out.println("Register attempt: email=" + keluarga.getEmail());
+
+        if (keluargaRepository.findByEmail(keluarga.getEmail()).isPresent()) {
+             Map<String, Object> error = new HashMap<>();
+             error.put("success", false);
+             error.put("message", "Email sudah terdaftar!");
+             return ResponseEntity.badRequest().body(error);
+        }
+
+        // Simpan data keluarga baru ke database
+        keluargaRepository.save(keluarga);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Registrasi berhasil");
+        
+        return ResponseEntity.ok(response);
+    }
+
     // ========== LOGIN KELUARGA ==========
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
