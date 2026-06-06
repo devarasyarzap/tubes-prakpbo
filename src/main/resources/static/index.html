@@ -308,13 +308,13 @@
                 let body = {};
                 
                 if (selectedRole === 'keluarga') {
-                    url = 'http://localhost:8080/api/auth/login';
+                    url = 'http://localhost:8081/api/auth/login';
                     body = { email: identifier, password: password };
                 } else if (selectedRole === 'pegawai') {
-                    url = 'http://localhost:8080/api/auth/login/pegawai';
+                    url = 'http://localhost:8081/api/auth/login/pegawai';
                     body = { nama: identifier, password: password };
                 } else if (selectedRole === 'admin') {
-                    url = 'http://localhost:8080/api/auth/login/admin';
+                    url = 'http://localhost:8081/api/auth/login/admin';
                     body = { email: identifier, password: password };
                 }
                 
@@ -346,7 +346,7 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Gagal terhubung ke server! Pastikan backend berjalan di http://localhost:8080');
+                alert('Gagal terhubung ke server! Pastikan backend berjalan di http://localhost:8081');
             } finally {
                 submitBtn.innerText = originalText;
                 submitBtn.disabled = false;
@@ -373,7 +373,7 @@
             submitBtn.disabled = true;
             
             try {
-                const response = await fetch('http://localhost:8080/api/auth/register', {
+                const response = await fetch('http://localhost:8081/api/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

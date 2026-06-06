@@ -191,7 +191,7 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:8080/api';
+        const API_BASE = 'http://localhost:8081/api';
         
         // Ambil data user dari localStorage
         const dataUser = JSON.parse(localStorage.getItem('userLoggedIn'));
@@ -214,7 +214,7 @@
             selectElement.innerHTML = '<option value="">⏳ Memuat data keluarga...</option>';
             
             try {
-                const response = await fetch('http://localhost:8080/api/keluarga');
+                const response = await fetch('http://localhost:8081/api/keluarga');
                 
                 console.log('Response status:', response.status); // Debug: lihat status
                 
@@ -247,7 +247,7 @@
             } catch (error) {
                 console.error('Error detail:', error);
                 selectElement.innerHTML = '<option value="">❌ Gagal memuat data keluarga</option>';
-                alert('Gagal memuat data keluarga. Pastikan backend berjalan di http://localhost:8080\n\nError: ' + error.message);
+                alert('Gagal memuat data keluarga. Pastikan backend berjalan di http://localhost:8081\n\nError: ' + error.message);
             }
         }
         
