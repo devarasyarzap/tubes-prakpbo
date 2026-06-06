@@ -174,7 +174,7 @@
             <div class="logo-text">FLUX<span class="logo-highlight">BIN</span></div>
         </div>
         <div class="nav-buttons">
-            <a href="admin.html" class="btn-navbar">
+            <a href="/admin.html" class="btn-navbar">
                 <span class="icon">📊</span> Dashboard Admin
             </a>
             <span class="badge-admin">
@@ -263,7 +263,7 @@
         
         if (!dataUser) {
             alert('Silakan login terlebih dahulu!');
-            window.location.href = 'index.html';
+            window.location.href = '/index.html';
         }
         
         // Tampilkan nama admin
@@ -426,7 +426,7 @@
         // ========== LOGOUT ==========
         document.getElementById('logout-btn')?.addEventListener('click', () => {
             localStorage.removeItem('userLoggedIn');
-            window.location.href = 'index.html';
+            window.location.href = '/index.html';
         });
         
         // ========== INIT ==========

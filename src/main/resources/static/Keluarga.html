@@ -237,7 +237,7 @@
             <div class="logo-text">Flux<span class="logo-highlight">bin</span></div>
         </div>
         <div class="nav-buttons">
-            <button class="user-nav-btn" onclick="window.location.href='History.html'">
+            <button class="user-nav-btn" onclick="window.location.href='/history.html'">
                 <span class="user-icon">📋</span>
                 <span>Riwayat</span>
             </button>
@@ -284,7 +284,7 @@
                     <div class="profile-label">Status Iuran</div>
                     <div id="status-iuran"></div>
 
-                    <button class="edit-profile-btn" onclick="window.location.href='ProfilKeluarga.html'">
+                    <button class="edit-profile-btn" onclick="window.location.href='Profil/keluarga.html'">
                         ✏️ Edit Profil
                     </button>
                 </div>
@@ -432,13 +432,13 @@
         // Jika belum login, redirect ke halaman login
         if (!dataUser) {
             alert('Silakan login terlebih dahulu!');
-            window.location.href = 'index.html';
+            window.location.href = '/index.html';
         }
         
         // Cek role - jika bukan keluarga, redirect
         if (dataUser && dataUser.role !== 'Keluarga' && dataUser.role !== 'keluarga') {
             alert('Halaman ini hanya untuk Keluarga!');
-            window.location.href = 'index.html';
+            window.location.href = '/index.html';
         }
 
         // ====================================================================
@@ -681,7 +681,7 @@
                 errorDiv.innerText = 'Sesi Anda telah berakhir. Silakan login kembali.';
                 setTimeout(() => {
                     localStorage.removeItem('userLoggedIn');
-                    window.location.href = 'index.html';
+                    window.location.href = '/index.html';
                 }, 2000);
                 return;
             }
@@ -698,7 +698,7 @@
                 errorDiv.innerText = 'Data Nomor KK tidak ditemukan. Silakan login kembali.';
                 setTimeout(() => {
                     localStorage.removeItem('userLoggedIn');
-                    window.location.href = 'index.html';
+                    window.location.href = '/index.html';
                 }, 2000);
                 return;
             }
@@ -728,12 +728,12 @@
         document.getElementById('logout-btn')?.addEventListener('click', function() {
             localStorage.removeItem('userLoggedIn');
             localStorage.removeItem('token');
-            window.location.href = 'index.html';
+            window.location.href = '/index.html';
         });
         
         // Tombol Profil
         document.getElementById('profile-btn')?.addEventListener('click', function() {
-            window.location.href = 'ProfilKeluarga.html';
+            window.location.href = 'Profil/keluarga.html';
         });
     </script>
 </body>

@@ -246,7 +246,7 @@
             <div class="col-md-3 mb-4">
                 <div class="sidebar">
                     <!-- Tombol Input Sampah -->
-                    <button class="btn-input-sampah" onclick="window.location.href='TambahSampah.html'">
+                    <button class="btn-input-sampah" onclick="window.location.href='/tambahsampah.html'">
                         ✍️ Setoran Sampah
                     </button>
                     
@@ -373,12 +373,12 @@
         
         if (!dataUser) {
             alert('Silakan login terlebih dahulu!');
-            window.location.href = 'index.html';
+            window.location.href = '/index.html';
         }
         
         if (dataUser.role !== 'Pegawai' && dataUser.role !== 'pegawai') {
             alert('Halaman ini hanya untuk Pegawai!');
-            window.location.href = 'index.html';
+            window.location.href = '/index.html';
         }
         
         // Tampilkan nama pegawai
@@ -501,7 +501,7 @@
         // ========== LOGOUT ==========
         document.getElementById('logout-btn')?.addEventListener('click', () => {
             localStorage.removeItem('userLoggedIn');
-            window.location.href = 'index.html';
+            window.location.href = '/index.html';
         });
         
         // Load dashboard default
