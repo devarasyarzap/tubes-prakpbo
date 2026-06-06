@@ -420,9 +420,12 @@
                     const jumlah = s.jumlahMasuk || 0;
                     totalSampah += jumlah;
                     
+                    // Di dalam sampahData.forEach(s => { ... })
                     const jenis = s.jenisSampah?.namaJenis?.toLowerCase() || '';
-                    if (jenis.includes('organik')) totalOrganik += jumlah;
-                    else if (jenis.includes('anorganik')) totalAnorganik += jumlah;
+                    
+                    // CEK ANORGANIK DULU!
+                    if (jenis.includes('anorganik')) totalAnorganik += jumlah;
+                    else if (jenis.includes('organik')) totalOrganik += jumlah;
                     else if (jenis.includes('b3')) totalB3 += jumlah;
                     
                     // Kelompokkan per bulan
