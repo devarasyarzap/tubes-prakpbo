@@ -395,6 +395,58 @@
                     }
                 });
 
+                // ========== CHART TREN SAMPAH (6 BULAN) ==========
+                const bulananData = {};
+                
+                // 1. Siapkan kerangka 6 bulan terakhir (agar urutannya benar dan tidak bolong)
+                for (let i = 5; i >= 0; i--) {
+                    const d = new Date();
+                    d.setMonth(d.getMonth() - i);
+                    const labelBulan = d.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+                    bulananData[labelBulan] = 0;
+                }
+
+                // 2. Masukkan data sampah ke bulan yang sesuai
+                sampah.forEach(s => {
+                    if (s.tanggalMasuk) {
+                        const date = new Date(s.tanggalMasuk);
+                        const labelBulan = date.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+                        
+                        // Jika bulan setoran ada di dalam 6 bulan terakhir, tambahkan beratnya
+                        if (bulananData[labelBulan] !== undefined) {
+                            bulananData[labelBulan] += (s.jumlahMasuk || 0);
+                        }
+                    }
+                });
+
+                const labelsTren = Object.keys(bulananData);
+                const dataTren = Object.values(bulananData);
+
+                // 3. Render grafik garis (Line Chart)
+                if (trenChart) trenChart.destroy();
+                trenChart = new Chart(document.getElementById('chartTrenSampah'), {
+                    type: 'line', 
+                    data: {
+                        labels: labelsTren,
+                        datasets: [{
+                            label: 'Total Sampah (kg)',
+                            data: dataTren,
+                            borderColor: '#00a86b',
+                            backgroundColor: 'rgba(0, 168, 107, 0.1)',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#00a86b',
+                            pointRadius: 4,
+                            fill: true,
+                            tension: 0.3 // Melengkungkan garis
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { position: 'bottom' } },
+                        scales: { y: { beginAtZero: true, title: { display: true, text: 'Berat (kg)' } } }
+                    }
+                });
+
                 // Recent transaksi
                 const tbody = document.getElementById('recent-transaksi');
                 if (tbody) {
@@ -416,16 +468,25 @@
         // ========== LOAD KELUARGA ==========
         async function loadKeluarga() {
             try {
-                const res = await fetch(`${API}/keluarga`).then(res => res.json());
-                document.getElementById('data-keluarga').innerHTML = res.map(k => `
-                    <tr>
-                        <td>${k.noKk || k.idUser}</td>
-                        <td>${k.namaUser || k.namaKepala}</td>
-                        <td>${k.alamat}</td>
-                        <td>${k.noTelp}</td>
-                        <td><button class="btn-flux btn-sm" onclick="hapusKeluarga('${k.noKk || k.idUser}')">Hapus</button></td>
-                    </tr>
-                `).join('');
+                // Simpan ke variabel global agar bisa dibaca oleh fungsi Edit
+                allKeluargaData = await fetch(`${API}/keluarga`).then(res => res.json());
+                
+                document.getElementById('data-keluarga').innerHTML = allKeluargaData.map(k => {
+                    const id = k.noKk || k.idUser;
+                    const nama = k.namaUser || k.namaKepala;
+                    return `
+                        <tr>
+                            <td>${id}</td>
+                            <td>${nama}</td>
+                            <td>${k.alamat || '-'}</td>
+                            <td>${k.noTelp || '-'}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm text-white font-weight-bold" onclick="showEditKeluarga('${id}')">✏️ Edit</button>
+                                <button class="btn btn-danger btn-sm font-weight-bold" onclick="hapusKeluarga('${id}')">🗑️ Hapus</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
             } catch(e) { console.error(e); }
         }
 
@@ -446,20 +507,137 @@
         }
 
         // ========== CRUD KELUARGA ==========
+        // 1. TAMPILKAN MODAL TAMBAH
         function showTambahKeluarga() { 
+            isEditMode = false;
+            
+            // Ubah judul modal
+            document.querySelector('#modalKeluarga .modal-header h5').innerText = 'Tambah Keluarga Baru';
+            
+            // Kosongkan dan buka kunci input No KK
+            document.getElementById('modalNoKK').value = '';
+            document.getElementById('modalNoKK').readOnly = false; 
+            document.getElementById('modalNama').value = '';
+            document.getElementById('modalAlamat').value = '';
+            document.getElementById('modalNoTelp').value = '';
+            document.getElementById('modalEmail').value = '';
+            document.getElementById('modalPassword').value = '';
+            
+            $('#modalKeluarga').modal('show'); 
+        }
+
+        function showEditKeluarga(noKk) {
+            isEditMode = true;
+            
+            // Cari data keluarga yang diklik dari array
+            const data = allKeluargaData.find(k => (k.noKk || k.idUser) === noKk);
+            if(!data) return;
+
+            // Ubah judul modal
+            document.querySelector('#modalKeluarga .modal-header h5').innerText = 'Edit Data Keluarga';
+
+            // Isi form dengan data lama
+            document.getElementById('modalNoKK').value = data.noKk || data.idUser;
+            // Kunci No KK agar tidak bisa diubah (karena ini adalah Primary Key)
+            document.getElementById('modalNoKK').readOnly = true; 
+            
+            document.getElementById('modalNama').value = data.namaKepala || data.namaUser || '';
+            document.getElementById('modalAlamat').value = data.alamat || '';
+            document.getElementById('modalNoTelp').value = data.noTelp || '';
+            document.getElementById('modalEmail').value = data.email || data.emailKontak || '';
+            document.getElementById('modalPassword').value = ''; // Biarkan kosong, isi hanya jika admin ingin mereset password warga
+
             $('#modalKeluarga').modal('show'); 
         }
         
         async function simpanKeluarga() { 
-            alert('Fungsi simpan terhubung ke backend'); 
-            $('#modalKeluarga').modal('hide'); 
-            loadKeluarga(); 
+            const noKk = document.getElementById('modalNoKK').value;
+            
+            if (!noKk) {
+                alert('No KK tidak boleh kosong!');
+                return;
+            }
+
+            // Siapkan bungkusan data JSON
+            const payload = {
+                noKk: noKk,
+                namaKepala: document.getElementById('modalNama').value,
+                alamat: document.getElementById('modalAlamat').value,
+                noTelp: document.getElementById('modalNoTelp').value,
+                email: document.getElementById('modalEmail').value,
+                role: "KELUARGA"
+            };
+
+            // Masukkan password hanya jika diketik (baik saat tambah baru atau reset)
+            const password = document.getElementById('modalPassword').value;
+            if (password) {
+                payload.password = password;
+            }
+
+            // Ubah tombol jadi "Menyimpan..."
+            const btnSimpan = document.querySelector('#modalKeluarga .btn-flux');
+            btnSimpan.innerText = 'Menyimpan...';
+            btnSimpan.disabled = true;
+
+            try {
+                let endpoint = '';
+                let method = '';
+
+                if (isEditMode) {
+                    // Tembak API Update yang sudah kita buat sebelumnya
+                    endpoint = `${API}/keluarga/update/${noKk}`;
+                    method = 'PUT';
+                } else {
+                    // Tembak API Register untuk keluarga baru
+                    endpoint = `${API}/auth/register`; 
+                    method = 'POST';
+                }
+
+                const response = await fetch(endpoint, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (response.ok || result.success) {
+                    alert(isEditMode ? '✅ Data keluarga berhasil diperbarui!' : '✅ Keluarga baru berhasil ditambahkan!');
+                    $('#modalKeluarga').modal('hide');
+                    loadKeluarga(); // Refresh tabel keluarga
+                    loadDashboard(); // Refresh angka total di dashboard utama
+                } else {
+                    alert('❌ Gagal: ' + (result.message || 'Terjadi kesalahan pada input data.'));
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Gagal terhubung ke server! Pastikan backend menyala.');
+            } finally {
+                // Kembalikan tombol seperti semula
+                btnSimpan.innerText = 'Simpan';
+                btnSimpan.disabled = false;
+            }
         }
         
         async function hapusKeluarga(id) { 
-            if(confirm('Hapus keluarga?')) { 
-                alert('Hapus: '+id); 
-                loadKeluarga(); 
+            if(confirm(`Yakin ingin menghapus keluarga dengan No KK: ${id}? Seluruh data terkait akan ikut terhapus.`)) { 
+                try {
+                    // Asumsi kamu punya endpoint DELETE di backend: /api/keluarga/hapus/{noKk} atau /api/keluarga/{noKk}
+                    const response = await fetch(`${API}/keluarga/${id}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        alert('✅ Data berhasil dihapus!'); 
+                        loadKeluarga();
+                        loadDashboard();
+                    } else {
+                        alert('❌ Gagal menghapus data.');
+                    }
+                } catch (error) {
+                    alert('❌ Terjadi kesalahan pada server.');
+                }
             } 
         }
         
